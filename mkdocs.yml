@@ -52,6 +52,7 @@ nav:
   - Arquitetura:
       - Arquitetura Limpa: architecture/clean-architecture.md
       - Fluxo do Agent & Diagramas: architecture/agent-flow.md
+      - RAG Explicado: architecture/rag-explained.md
   
   - Especialistas:
       - Visão Geral: specialists/overview.md
@@ -64,6 +65,7 @@ nav:
   
   - Exemplos:
       - Exemplos Básicos: examples/basic.md
+      - Uso do RAG: examples/rag-usage.md
   
   - Referência da API:
       - API dos Especialistas: api/specialists.md

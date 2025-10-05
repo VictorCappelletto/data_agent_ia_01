@@ -9,6 +9,7 @@ from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass
 
 from langchain.schema import Document
+from ...domain.ports import VectorStorePort
 
 
 @dataclass
@@ -45,14 +46,14 @@ class DPLRetriever:
     - Context enhancement
     """
     
-    def __init__(self, vector_store):
+    def __init__(self, vector_store: VectorStorePort):
         """
         Initialize DPL retriever.
         
         Args:
-            vector_store: VectorStorePort implementation
+            vector_store: VectorStorePort implementation (Dependency Injection)
         """
-        self.vector_store = vector_store
+        self.vector_store: VectorStorePort = vector_store
         
         # Category mappings for DPL knowledge
         self.category_keywords = {
@@ -477,15 +478,19 @@ class DPLContextEnhancer:
 # FACTORY FUNCTIONS
 # ============================================================================
 
-def create_hdl_retriever(vector_store) -> DPLRetriever:
+def create_hdl_retriever(vector_store: VectorStorePort) -> DPLRetriever:
     """
-    Factory function to create DPLRetriever.
+    Factory function to create DPLRetriever with Dependency Injection.
     
     Args:
-        vector_store: Vector store implementation
+        vector_store: VectorStorePort implementation (e.g., ChromaVectorStore)
         
     Returns:
         Initialized DPLRetriever
+        
+    Example:
+        >>> chroma_store = ChromaVectorStore()
+        >>> retriever = create_hdl_retriever(chroma_store)
     """
     return DPLRetriever(vector_store)
 
@@ -501,4 +506,35 @@ def create_context_enhancer(retriever: DPLRetriever) -> DPLContextEnhancer:
         Initialized DPLContextEnhancer
     """
     return DPLContextEnhancer(retriever)
+
+
+def get_hdl_retriever() -> DPLRetriever:
+    """
+    Singleton factory to get DPLRetriever with full Dependency Injection.
+    
+    Creates complete stack with proper Clean Architecture:
+    1. ChromaVectorStore (Infrastructure) implements VectorStorePort (Domain)
+    2. DPLRetriever receives VectorStorePort via constructor injection
+    3. Application layer receives DPLRetriever
+    
+    Returns:
+        Initialized DPLRetriever with ChromaVectorStore injected
+        
+    Example:
+        >>> retriever = get_hdl_retriever()
+        >>> # Retriever is ready to use with ChromaDB
+    
+    Note:
+        This function is called by get_hdl_retriever_service() to compose
+        the complete RAG stack following Clean Architecture principles.
+    """
+    from .chroma_store import create_chroma_store
+    
+    # Create infrastructure dependency (ChromaDB implements VectorStorePort)
+    vector_store: VectorStorePort = create_chroma_store()
+    
+    # Inject dependency into DPLRetriever via constructor (Dependency Injection)
+    retriever = create_hdl_retriever(vector_store)
+    
+    return retriever
 

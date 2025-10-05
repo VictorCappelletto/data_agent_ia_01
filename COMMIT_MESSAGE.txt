@@ -1,0 +1,45 @@
+refactor: Implement Dependency Injection in RAG system following Clean Architecture
+
+## Code Changes
+
+- Add type hints to DPLRetriever for VectorStorePort (domain interface)
+- Implement get_hdl_retriever() factory with full dependency composition
+- Update DPLRetrieverService to use constructor injection
+- Fix import path from hdl_retriever to dpl_retriever
+
+## Documentation Updates
+
+- docs/architecture/clean-architecture.md: Add comprehensive DI section with RAG examples
+- docs/architecture/rag-explained.md: Complete technical RAG explanation (NEW)
+- docs/architecture/agent-flow.md: Update diagrams with 3-phase RAG architecture
+- docs/examples/rag-usage.md: Practical RAG usage examples (NEW)
+- docs/index.md: Update RAG section with clear conceptual explanation
+- docs/development/pending-improvements.md: Mark RAG integration as completed
+- README.md: Add concise RAG explanation
+
+## Tests
+
+- tests/unit/test_architecture.py: Comprehensive architecture compliance tests (NEW)
+  - Validates Dependency Inversion Principle
+  - Ensures domain layer has no infrastructure imports
+  - Verifies proper type hints and DI implementation
+
+## Infrastructure
+
+- deploy_docs.sh: Automated documentation deployment script (NEW)
+
+## Benefits
+
+- Testability: Easy to inject mocks for unit testing
+- Flexibility: Can swap ChromaDB for other vector stores
+- Maintainability: Clear separation between domain and infrastructure
+- Type Safety: Compile-time verification of dependencies
+
+---
+
+Technical Debt Resolved:
+- Fixed missing type hints in DPLRetriever constructor
+- Resolved import inconsistency in vector_store __init__
+- Implemented missing get_hdl_retriever() factory function
+- Added automated architecture validation tests
+

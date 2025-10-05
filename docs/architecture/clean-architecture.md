@@ -133,6 +133,223 @@ class ChromaVectorStore(VectorStorePort):
 
 ---
 
+## Dependency Injection (Injeção de Dependências)
+
+O DPL Agent implementa Dependency Injection para garantir baixo acoplamento e alta testabilidade.
+
+### Princípios Implementados
+
+1. **Constructor Injection**: Dependências são injetadas via construtor
+2. **Interface-based**: Classes dependem de abstrações (Ports), não de implementações concretas
+3. **Factory Pattern**: Funções factory compõem o grafo de dependências
+4. **Type Hints**: Tipos explícitos para validação em tempo de compilação
+
+### Implementação no RAG System
+
+#### Camada de Domínio: Define a Interface
+
+```python
+# domain/ports/hdl_repository_port.py
+from abc import ABC, abstractmethod
+from typing import List, Dict, Any, Optional
+
+class VectorStorePort(ABC):
+    """Port (interface) for vector store operations."""
+    
+    @abstractmethod
+    async def search(
+        self, 
+        query: str, 
+        top_k: int = 5,
+        filters: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
+        """Search for similar documents."""
+        pass
+```
+
+#### Camada de Infraestrutura: Implementa a Interface
+
+```python
+# infrastructure/vector_store/chroma_store.py
+from ...domain.ports import VectorStorePort
+
+class ChromaVectorStore(VectorStorePort):
+    """ChromaDB implementation of VectorStorePort."""
+    
+    async def search(
+        self,
+        query: str,
+        top_k: int = 5,
+        filters: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
+        # Implementation using ChromaDB
+        results = self._vectorstore.similarity_search(query, k=top_k)
+        return [{"content": doc.page_content, "metadata": doc.metadata} 
+                for doc in results]
+```
+
+#### Infraestrutura: Recebe Dependência Injetada
+
+```python
+# infrastructure/vector_store/dpl_retriever.py
+from ...domain.ports import VectorStorePort
+
+class DPLRetriever:
+    """DPL-specific retriever with dependency injection."""
+    
+    def __init__(self, vector_store: VectorStorePort):
+        """
+        Initialize with injected vector store.
+        
+        Args:
+            vector_store: VectorStorePort implementation (injected)
+        """
+        self.vector_store: VectorStorePort = vector_store
+```
+
+#### Camada de Aplicação: Usa via Factory
+
+```python
+# application/services/dpl_retriever_service.py
+from ...infrastructure.vector_store import DPLRetriever
+
+class DPLRetrieverService:
+    """Application service with dependency injection."""
+    
+    def __init__(self, retriever: DPLRetriever):
+        """
+        Initialize with injected retriever.
+        
+        Args:
+            retriever: DPLRetriever instance (injected)
+        """
+        self.retriever: DPLRetriever = retriever
+```
+
+#### Composition Root: Factory Compõe Dependências
+
+```python
+# infrastructure/vector_store/dpl_retriever.py
+def get_hdl_retriever() -> DPLRetriever:
+    """
+    Factory function that composes the dependency graph.
+    
+    Creates the full stack:
+    1. ChromaVectorStore (implements VectorStorePort)
+    2. Injects into DPLRetriever via constructor
+    3. Returns configured retriever
+    """
+    from .chroma_store import create_chroma_store
+    
+    # Create infrastructure implementation
+    vector_store: VectorStorePort = create_chroma_store()
+    
+    # Inject dependency via constructor
+    retriever = DPLRetriever(vector_store)
+    
+    return retriever
+```
+
+### Benefícios do Dependency Injection
+
+#### 1. Testabilidade
+
+```python
+# Em testes, injete mocks:
+def test_retriever_with_mock():
+    mock_store = MockVectorStore()
+    retriever = DPLRetriever(mock_store)  # Injeta mock
+    
+    result = retriever.search("query")
+    assert mock_store.search_called  # Verifica comportamento
+```
+
+#### 2. Flexibilidade
+
+```python
+# Fácil trocar implementações:
+# Produção: ChromaDB
+vector_store = ChromaVectorStore()
+
+# Desenvolvimento: In-memory
+vector_store = InMemoryVectorStore()
+
+# Ambos implementam VectorStorePort
+retriever = DPLRetriever(vector_store)
+```
+
+#### 3. Configuração Dinâmica
+
+```python
+# Escolher implementação via configuração:
+if config.vector_store == "chroma":
+    store = ChromaVectorStore()
+elif config.vector_store == "pinecone":
+    store = PineconeVectorStore()
+    
+retriever = DPLRetriever(store)
+```
+
+### Validação de Arquitetura
+
+O projeto inclui testes automatizados para garantir conformidade:
+
+```python
+# tests/unit/test_architecture.py
+def test_dpl_retriever_uses_port():
+    """Valida que DPLRetriever depende de VectorStorePort."""
+    from dpl_agent_lib.infrastructure.vector_store import DPLRetriever
+    from dpl_agent_lib.domain.ports import VectorStorePort
+    
+    init_signature = inspect.signature(DPLRetriever.__init__)
+    vector_store_param = init_signature.parameters.get('vector_store')
+    
+    assert vector_store_param.annotation == VectorStorePort
+```
+
+Execute os testes:
+
+```bash
+pytest tests/unit/test_architecture.py -v
+```
+
+### Fluxo de Dependências no RAG
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ Application Layer (Specialists)                                  │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ DPLRetrieverService                                         │ │
+│ │   receives: DPLRetriever (injected)                         │ │
+│ └─────────────────────┬───────────────────────────────────────┘ │
+└───────────────────────┼─────────────────────────────────────────┘
+                        │ depends on
+┌───────────────────────┼─────────────────────────────────────────┐
+│ Infrastructure Layer  ▼                                          │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ DPLRetriever                                                │ │
+│ │   receives: VectorStorePort (injected)                      │ │
+│ └─────────────────────┬───────────────────────────────────────┘ │
+│                       │ depends on (interface)                  │
+│ ┌─────────────────────┼───────────────────────────────────────┐ │
+│ │ ChromaVectorStore   ▼                                       │ │
+│ │   implements: VectorStorePort                               │ │
+│ └─────────────────────┬───────────────────────────────────────┘ │
+└───────────────────────┼─────────────────────────────────────────┘
+                        │ implements
+┌───────────────────────┼─────────────────────────────────────────┐
+│ Domain Layer          ▼                                          │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ VectorStorePort (Interface/Port)                            │ │
+│ │   defines: abstract methods                                 │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+
+Dependency Rule: All arrows point INWARD (to Domain)
+```
+
+---
+
 ## Benefícios
 
 ### Testes Fáceis

@@ -1,80 +1,91 @@
 # Pending Improvements
 
-**Last Updated:** 2025-10-04 
-**Status:** Identified Issues Awaiting Implementation
+**Last Updated:** 2025-10-05  
+**Status:** Tracking Future Enhancements
 
 ---
 
-## Critical: RAG Integration Required
+## ✅ COMPLETED: RAG Integration
 
-### Issue
+### Status: IMPLEMENTED (v3.1)
 
-**Current Behavior:**
-- Specialists operate in standalone mode without accessing the knowledge base
-- Provide generic troubleshooting based on pattern matching
-- Do not validate if pipelines/workflows actually exist
-- Cannot leverage the 164+ DPL documentation files
+**Implementation Confirmed:**
+- ✅ All 7 specialists now use `DPLRetrieverService` for RAG
+- ✅ Knowledge base queries happen automatically in each specialist
+- ✅ Responses include citations from documentation sources
+- ✅ Fallback to hardcoded patterns if RAG unavailable
 
-**Expected Behavior:**
-- Specialists should ALWAYS consult RAG (Retrieval-Augmented Generation) system
-- Query knowledge base before responding
-- Validate workflows against documented pipelines
-- Provide specialized, context-aware responses
-
-### Impact
-
-**Severity:** HIGH 
-**Affected Components:** All 7 specialists
-
-**Example:**
+**Example (Current Behavior):**
 ```python
-# Current behavior
-troubleshoot_hdl_error("hdl-batch-tasks timeout")
-# Returns: Generic timeout diagnosis (workflow not validated)
+from dpl_agent_lib.specialists import troubleshoot_hdl_error
 
-# Expected behavior (after fix)
-troubleshoot_hdl_error("hdl-batch-tasks timeout")
-# Should: 
-# 1. Query knowledge base for "hdl-batch-tasks"
-# 2. Identify workflow doesn't exist (suggest dpl-ingestion-Orders.json)
-# 3. Provide specific diagnosis based on actual workflow
+# Specialist automatically uses RAG
+result = troubleshoot_hdl_error("timeout no dpl-stream-visits")
+
+# Internally:
+# 1. Calls rag_service.search_error_patterns()
+# 2. Retrieves Top-5 relevant docs from knowledge base
+# 3. Enhances context with retrieved knowledge
+# 4. LLM generates response based on documentation
+# 5. Includes source citations in response
 ```
 
-### Root Cause
+**Code Evidence:**
+- `troubleshooter.py`: Lines 358-383 - RAG search before diagnosis
+- `performance_advisor.py`: Lines 29-39 - RAG service initialization
+- `quality_assistant.py`: Lines 29-39 - RAG integration
+- `ecosystem_assistant.py`: Lines 20-30 - RAG service
+- All specialists: Import and use `get_hdl_retriever_service()`
 
-Specialists are implemented as standalone LangChain tools that:
-- Execute business logic directly without RAG consultation
-- Were designed for offline operation (no API key required)
-- Do not integrate with the vector store/retriever system
+---
 
-### Proposed Solution
+## Future Enhancements
 
-**Option A: Refactor Specialists (Recommended)**
-- Integrate DPLRetriever directly into each specialist
-- Query knowledge base before diagnosis/recommendation
-- Maintain offline capability with cached knowledge fallback
+### Priority 1: Advanced RAG Features
 
-**Option B: Platform Full Agent Usage**
-- Deprecate standalone specialist calls
-- Require all usage through full LangGraph agent
-- Agent handles RAG → Specialist flow
+**Hybrid Search**
+- Combine semantic search (embeddings) with keyword search (BM25)
+- Better recall for technical terms and error codes
+- Estimated effort: 4-6 hours
 
-**Option C: Smart Specialist Wrapper**
-- Create intermediate layer (SmartSpecialist)
-- Automatically queries RAG before delegating to specialist
-- Transparent to existing code
+**Query Decomposition**
+- Break complex questions into sub-queries
+- Search knowledge base multiple times with different angles
+- Estimated effort: 6-8 hours
 
-### Implementation Checklist
+### Priority 2: RAG Performance
 
-- [ ] Design RAG integration pattern for specialists
-- [ ] Implement integration in Troubleshooter (pilot)
-- [ ] Validate behavior with real workflows
-- [ ] Extend to remaining 6 specialists
-- [ ] Update unit tests to mock RAG queries
-- [ ] Update E2E tests to validate RAG integration
-- [ ] Update documentation
+**Metadata Filtering**
+- Filter by document type before vector search
+- Filter by entity, pipeline type, or date
+- Reduces search space, improves speed
+- Estimated effort: 3-4 hours
 
-### Knowledge Base Gap
+**Re-ranking with Cross-Encoder**
+- Initial retrieval: Fast but less accurate
+- Re-rank Top-20 with precise cross-encoder model
+- Better Top-5 final results
+- Estimated effort: 4-6 hours
+
+### Priority 3: RAG Quality
+
+**Evaluation Metrics**
+- Track faithfulness (answer matches context)
+- Track answer relevance (answer matches question)
+- Track context precision (retrieved docs are relevant)
+- Estimated effort: 8-10 hours
+
+**Feedback Loop**
+- Collect user feedback on responses
+- Use feedback to improve retrieval
+- Fine-tune ranking based on usage patterns
+- Estimated effort: 12-16 hours
+
+---
+
+## Other Improvements (Non-RAG)
+
+### Knowledge Base Expansion
 
 **Current Coverage:** 4 workflows documented
 - dpl-stream-visits.json

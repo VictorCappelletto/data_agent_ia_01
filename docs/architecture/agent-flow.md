@@ -28,48 +28,109 @@ graph LR
 
 ```mermaid
 sequenceDiagram
-    participant Usuário
-    participant Agent
-    participant BC as Base de Conhecimento
-    participant Especialista
+    participant U as Usuário
+    participant A as Agent (LangGraph)
+    participant S as Especialista
+    participant R as DPLRetrieverService
+    participant V as ChromaDB
+    participant L as LLM (Claude)
     
-    Usuário->>Agent: "Por que o pipeline visits está expirando?"
-    Agent->>BC: Buscar docs relevantes
-    BC-->>Agent: Documentação DPL
-    Agent->>Especialista: Executar troubleshooter
-    Especialista-->>Agent: Diagnóstico + etapas
-    Agent-->>Usuário: Resposta profissional
+    U->>A: "Pipeline visits expirando"
+    
+    Note over A: 1. ROTEAMENTO
+    A->>A: Análise de intenção<br/>(LLM classifica)
+    A->>S: Chamar Troubleshooter
+    
+    Note over S,V: 2. RETRIEVAL
+    S->>R: search_error_patterns(<br/>"visits expirando")
+    R->>R: Construir query otimizada
+    R->>V: similarity_search(<br/>query_vector, k=5)
+    V-->>R: Top-5 docs + scores
+    R->>R: enhance_context()
+    R-->>S: Contexto formatado
+    
+    Note over S,L: 3. GENERATION
+    S->>S: Construir prompt:<br/>contexto + query
+    S->>L: generate(prompt)
+    L-->>S: Diagnóstico fundamentado
+    
+    S-->>A: Resultado + fontes
+    A-->>U: Resposta formatada
 ```
 
-**Etapas:**
-1. Usuário faz pergunta
-2. Agent busca base de conhecimento por contexto
-3. Agent seleciona e executa especialista apropriado
-4. Especialista fornece diagnóstico com fontes
-5. Agent retorna resposta formatada
+**Etapas Detalhadas:**
+
+1. **Roteamento**: Agent classifica intenção e seleciona especialista apropriado
+2. **Retrieval**: Especialista busca documentação relevante via RAG (embeddings + similaridade)
+3. **Generation**: LLM gera resposta baseada no contexto recuperado
+4. **Resposta**: Inclui diagnóstico + citações das fontes consultadas
+
+**Pontos Importantes:**
+
+- **LLM usado 2x**: No Agent (classificação) e no Especialista (geração)
+- **RAG no Especialista**: Cada especialista chama `DPLRetrieverService` automaticamente
+- **Contexto flui**: ChromaDB → Retriever → Especialista → LLM → Usuário
 
 ---
 
-## Sistema RAG (Recuperação de Conhecimento)
+## Sistema RAG (Retrieval-Augmented Generation)
+
+### Arquitetura Completa em 3 Fases
 
 ```mermaid
-graph TD
-    A[Especialista precisa de contexto] --> B[Serviço RAG]
-    B --> C[Buscar Base de Conhecimento]
-    C --> D{Encontrou?}
-    D -->|Sim| E[Retornar contexto + fontes]
-    D -->|Não| F[Usar padrões fallback]
-    E --> G[Resposta aprimorada]
-    F --> G
+graph TB
+    subgraph "FASE 1: INDEXAÇÃO (Offline - Setup)"
+        A[Documentos .md<br/>66 arquivos] --> B[Chunking<br/>Dividir em blocos]
+        B --> C[Embedding Model<br/>all-MiniLM-L6-v2]
+        C --> D[Vetores 384D<br/>representação numérica]
+        D --> E[(ChromaDB<br/>Vector Store)]
+    end
     
-    style B fill:#00acc1,stroke:#333,stroke-width:2px
+    subgraph "FASE 2: RETRIEVAL (Runtime - Busca)"
+        F[Query do Usuário<br/>texto] --> G[Embedding Model<br/>mesma transformação]
+        G --> H[Query Vector 384D]
+        H --> I[Cosine Similarity<br/>Top-K Search]
+        E --> I
+        I --> J[Top-5 Documentos<br/>mais relevantes + scores]
+    end
+    
+    subgraph "FASE 3: GENERATION (Runtime - Resposta)"
+        J --> K[Context Injection<br/>formatar para prompt]
+        K --> L[LLM Claude<br/>gerar resposta]
+        L --> M[Resposta Final<br/>com citações das fontes]
+    end
+    
+    style E fill:#00acc1,stroke:#333,stroke-width:2px,color:#fff
+    style L fill:#1565c0,stroke:#333,stroke-width:2px,color:#fff
+    style I fill:#ff9800,stroke:#333,stroke-width:2px,color:#000
 ```
 
-**Como funciona:**
-- Especialistas consultam o serviço RAG para documentação relevante
-- RAG busca 66 arquivos markdown usando busca semântica
-- Retorna contexto com fontes se encontrado
-- Volta para padrões hardcoded se não encontrado
+### Componentes Técnicos Explicados
+
+**1. Embedding Model (Sentence Transformers)**
+- Converte texto em vetores numéricos de 384 dimensões
+- Textos semanticamente similares → vetores próximos no espaço vetorial
+- Modelo: `all-MiniLM-L6-v2` (rápido, leve, 80MB)
+
+**2. Vector Database (ChromaDB)**
+- Armazena embeddings dos 66 documentos da base de conhecimento
+- Busca eficiente usando índices aproximados (HNSW algorithm)
+- Persiste em disco para reuso entre execuções
+
+**3. Similarity Search (Cosine)**
+- Calcula similaridade entre query vector e document vectors
+- Métrica: Cosine Similarity (0 = totalmente diferente, 1 = idêntico)
+- Retorna Top-K documentos mais similares (default K=5)
+
+**4. Context Injection**
+- Formata documentos recuperados em texto estruturado
+- Injeta no prompt do LLM com instruções específicas
+- Garante resposta fundamentada em documentação real
+
+**5. LLM Generation (Claude)**
+- Recebe: contexto recuperado + query original + instruções
+- Gera: resposta baseada APENAS no contexto fornecido
+- Inclui: citações das fontes consultadas
 
 ---
 

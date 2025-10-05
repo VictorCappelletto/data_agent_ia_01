@@ -12,13 +12,14 @@ from .knowledge_loader import (
     create_knowledge_loader,
     create_knowledge_indexer,
 )
-from .hdl_retriever import (
+from .dpl_retriever import (
     DPLRetriever,
     DPLContextEnhancer,
     RetrievalContext,
     RetrievalResult,
     create_hdl_retriever,
     create_context_enhancer,
+    get_hdl_retriever,
 )
 
 __all__ = [
@@ -39,5 +40,6 @@ __all__ = [
     "RetrievalResult",
     "create_hdl_retriever",
     "create_context_enhancer",
+    "get_hdl_retriever",  # Singleton factory with full DI
 ]
 

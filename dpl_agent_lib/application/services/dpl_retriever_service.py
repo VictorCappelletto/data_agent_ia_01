@@ -4,9 +4,15 @@ DPL Retriever Service - RAG Integration
 Provides centralized semantic search and context enhancement
 for all DPL specialists. This service acts as the bridge between
 specialists and the DPL knowledge base, enabling RAG-powered responses.
+
+This service follows Clean Architecture principles:
+- Depends on domain ports (VectorStorePort) via DPLRetriever
+- Uses Dependency Injection for flexibility
+- Infrastructure details (ChromaDB) are injected, not hard-coded
 """
 
 from typing import List, Optional, Dict, Any
+from ...domain.ports import VectorStorePort
 from ...infrastructure.vector_store import DPLRetriever
 from ...utils import get_logger
 
@@ -24,19 +30,25 @@ class DPLRetrieverService:
     
     def __init__(self, retriever: DPLRetriever):
         """
-        Initialize DPL retriever service.
+        Initialize DPL retriever service with Dependency Injection.
         
         Args:
-            retriever: DPL vector store retriever instance
+            retriever: DPLRetriever instance (injected, uses VectorStorePort internally)
             
         Raises:
             ValueError: If retriever is None
+            
+        Note:
+            This service follows Clean Architecture principles:
+            - Receives dependencies via constructor injection
+            - Depends on DPLRetriever which uses VectorStorePort (domain interface)
+            - Infrastructure details (ChromaDB) are abstracted away
         """
         if retriever is None:
             raise ValueError("retriever cannot be None")
         
-        self.retriever = retriever
-        logger.info("DPL Retriever Service initialized")
+        self.retriever: DPLRetriever = retriever
+        logger.info("DPL Retriever Service initialized with injected retriever")
     
     def search_error_patterns(
         self,

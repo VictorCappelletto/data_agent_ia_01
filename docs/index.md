@@ -27,11 +27,32 @@ DPL Agent é um assistente AI especializado construído com LangChain e LangGrap
 - **Camada de Aplicação**: Casos de uso e orquestração (7 especialistas)
 - **Camada de Infraestrutura**: LLM, vector store e integrações externas
 
-### Sistema RAG
-- **66 arquivos de documentação** como base de conhecimento (41 core + 25 workflows)
-- **Vector store ChromaDB** para busca semântica
-- **Recuperação consciente de contexto** com filtragem de entidade e pipeline
-- **Integrado em todos os especialistas** para respostas aprimoradas
+### Sistema RAG (Retrieval-Augmented Generation)
+
+O DPL Agent utiliza **RAG** para fornecer respostas fundamentadas em documentação real, não em conhecimento genérico do LLM.
+
+**Como Funciona:**
+
+1. **Retrieval**: Busca documentos relevantes usando embeddings vetoriais (Sentence Transformers)
+2. **Augmentation**: Injeta contexto recuperado no prompt do LLM
+3. **Generation**: LLM gera resposta baseada na documentação DPL específica
+
+**Benefícios:**
+
+- ✅ Respostas específicas do DPL (não genéricas)
+- ✅ Fundamentadas em documentação real com citações
+- ✅ Reduz "alucinações" do LLM
+- ✅ Conhecimento atualizado sem retreinar modelo
+
+**Stack Técnico:**
+
+- **Base de Conhecimento**: 66 arquivos markdown (41 core + 25 workflows)
+- **Vector Store**: ChromaDB para busca semântica
+- **Embeddings**: Sentence Transformers `all-MiniLM-L6-v2` (384D)
+- **Similaridade**: Cosine similarity para ranking de relevância
+- **Integração**: ✅ Todos os 7 especialistas usam RAG automaticamente
+
+📖 **[Explicação Técnica Completa do RAG](architecture/rag-explained.md)**
 
 ### Orquestração LangGraph
 - **Workflows com estado** para interações multi-turno
