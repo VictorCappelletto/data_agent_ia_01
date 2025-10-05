@@ -1,43 +1,43 @@
-# DPL Specialists Overview
+# Visão Geral dos Especialistas DPL
 
-The DPL Agent includes **7 specialized tools** designed for different DPL operational scenarios.
-
----
-
-## Why Specialists?
-
-Instead of a monolithic agent trying to do everything, we have **focused specialists** that excel at specific tasks:
-
-- **Better accuracy** - Specialized prompts and logic
-- **Easier maintenance** - Update one specialist without affecting others
-- **Clear responsibilities** - Each specialist has a defined role
-- **Composable** - Use individually or together
+O DPL Agent inclui **7 ferramentas especializadas** projetadas para diferentes cenários operacionais do DPL.
 
 ---
 
-## All 7 Specialists
+## Por Que Especialistas?
+
+Em vez de um agent monolítico tentando fazer tudo, temos **especialistas focados** que se destacam em tarefas específicas:
+
+- **Melhor precisão** - Prompts e lógica especializados
+- **Manutenção mais fácil** - Atualizar um especialista sem afetar outros
+- **Responsabilidades claras** - Cada especialista tem um papel definido
+- **Compostável** - Usar individualmente ou em conjunto
+
+---
+
+## Todos os 7 Especialistas
 
 ### 1. **Troubleshooter**
 
-**Purpose**: Diagnose errors and investigate issues
+**Propósito**: Diagnosticar erros e investigar problemas
 
-**Tools** (2):
-- `troubleshoot_hdl_error` - Error diagnosis with pattern matching
-- `analyze_pipeline_health` - Pipeline health check
+**Ferramentas** (2):
+- `troubleshoot_hdl_error` - Diagnóstico de erro com correspondência de padrões
+- `analyze_pipeline_health` - Verificação de saúde de pipeline
 
-**When to use**:
-- Pipeline failed or timing out
-- Unexpected behavior in streaming/batch
-- Need to understand what went wrong
+**Quando usar**:
+- Pipeline falhou ou está expirando
+- Comportamento inesperado em streaming/batch
+- Precisa entender o que deu errado
 
-**Example**:
+**Exemplo**:
 ```python
 from data_pipeline_agent_lib.specialists import troubleshoot_hdl_error
 
 result = await troubleshoot_hdl_error.ainvoke({
-"error_message": "Pipeline timeout after 90 minutes",
-"entity_name": "visits",
-"pipeline_type": "streaming"
+    "error_message": "Timeout de pipeline após 90 minutos",
+    "entity_name": "visits",
+    "pipeline_type": "streaming"
 })
 ```
 
@@ -45,23 +45,23 @@ result = await troubleshoot_hdl_error.ainvoke({
 
 ### 2. **Bug Resolver**
 
-**Purpose**: Provide solutions for known bugs and issues
+**Propósito**: Fornecer soluções para bugs e problemas conhecidos
 
-**Tools** (1):
-- `resolve_hdl_bug` - Bug resolution guidance
+**Ferramentas** (1):
+- `resolve_hdl_bug` - Orientação para resolução de bugs
 
-**When to use**:
-- Known bug patterns (SCD2, UUID conversion, etc.)
-- Need step-by-step fix instructions
-- Looking for tested solutions
+**Quando usar**:
+- Padrões de bugs conhecidos (SCD2, conversão UUID, etc.)
+- Precisa de instruções de correção passo a passo
+- Procurando soluções testadas
 
-**Example**:
+**Exemplo**:
 ```python
 from data_pipeline_agent_lib.specialists import resolve_hdl_bug
 
 result = await resolve_hdl_bug.ainvoke({
-"bug_description": "SCD2 is_current flags are incorrect",
-"entity_name": "visits"
+    "bug_description": "Flags is_current do SCD2 estão incorretos",
+    "entity_name": "visits"
 })
 ```
 
@@ -69,23 +69,23 @@ result = await resolve_hdl_bug.ainvoke({
 
 ### 3. **Performance Advisor**
 
-**Purpose**: Optimize pipeline performance
+**Propósito**: Otimizar performance de pipeline
 
-**Tools** (1):
-- `optimize_hdl_pipeline` - Performance optimization strategies
+**Ferramentas** (1):
+- `optimize_hdl_pipeline` - Estratégias de otimização de performance
 
-**When to use**:
-- Pipeline running slowly
-- Need to improve throughput
-- Resource optimization required
+**Quando usar**:
+- Pipeline executando lentamente
+- Precisa melhorar throughput
+- Otimização de recursos necessária
 
-**Example**:
+**Exemplo**:
 ```python
 from data_pipeline_agent_lib.specialists import optimize_hdl_pipeline
 
 result = await optimize_hdl_pipeline.ainvoke({
-"pipeline_name": "hdl-batch-tasks",
-"performance_issue": "Processing taking too long"
+    "pipeline_name": "hdl-batch-tasks",
+    "performance_issue": "Processamento levando muito tempo"
 })
 ```
 
@@ -93,23 +93,23 @@ result = await optimize_hdl_pipeline.ainvoke({
 
 ### 4. **Quality Assistant**
 
-**Purpose**: Validate data quality
+**Propósito**: Validar qualidade de dados
 
-**Tools** (1):
-- `validate_hdl_data_quality` - Data quality validation
+**Ferramentas** (1):
+- `validate_hdl_data_quality` - Validação de qualidade de dados
 
-**When to use**:
-- Suspect data quality issues
-- Need completeness/accuracy checks
-- Validating after reprocessing
+**Quando usar**:
+- Suspeita de problemas de qualidade de dados
+- Precisa de verificações de completude/precisão
+- Validando após reprocessamento
 
-**Example**:
+**Exemplo**:
 ```python
 from data_pipeline_agent_lib.specialists import validate_hdl_data_quality
 
 result = await validate_hdl_data_quality.ainvoke({
-"entity_name": "visits",
-"quality_dimension": "completeness"
+    "entity_name": "visits",
+    "quality_dimension": "completeness"
 })
 ```
 
@@ -117,30 +117,30 @@ result = await validate_hdl_data_quality.ainvoke({
 
 ### 5. DPL Commander
 
-**Purpose**: Execute and monitor workflows
+**Propósito**: Executar e monitorar workflows
 
-**Tools** (2):
-- `execute_hdl_workflow` - Workflow execution
-- `get_workflow_status` - Workflow monitoring
+**Ferramentas** (2):
+- `execute_hdl_workflow` - Execução de workflow
+- `get_workflow_status` - Monitoramento de workflow
 
-**When to use**:
-- Need to run a workflow
-- Check workflow execution status
-- Monitor pipeline progress
+**Quando usar**:
+- Precisa executar um workflow
+- Verificar status de execução de workflow
+- Monitorar progresso de pipeline
 
-**Example**:
+**Exemplo**:
 ```python
 from data_pipeline_agent_lib.specialists import execute_hdl_workflow, get_workflow_status
 
-# Execute workflow
+# Executar workflow
 exec_result = await execute_hdl_workflow.ainvoke({
-"workflow_name": "dpl-stream-visits",
-"parameters": {}
+    "workflow_name": "dpl-stream-visits",
+    "parameters": {}
 })
 
-# Check status
+# Verificar status
 status_result = await get_workflow_status.ainvoke({
-"workflow_name": "dpl-stream-visits"
+    "workflow_name": "dpl-stream-visits"
 })
 ```
 
@@ -148,30 +148,30 @@ status_result = await get_workflow_status.ainvoke({
 
 ### 6. **Ecosystem Assistant**
 
-**Purpose**: Explain DPL components and provide guidance
+**Propósito**: Explicar componentes DPL e fornecer orientação
 
-**Tools** (2):
-- `explain_hdl_component` - Component explanations
-- `get_hdl_best_practices` - Best practices guidance
+**Ferramentas** (2):
+- `explain_hdl_component` - Explicações de componentes
+- `get_hdl_best_practices` - Orientação de melhores práticas
 
-**When to use**:
-- Learning about DPL architecture
-- Understanding specific components
-- Need best practices guidance
+**Quando usar**:
+- Aprendendo sobre arquitetura DPL
+- Entendendo componentes específicos
+- Precisa de orientação de melhores práticas
 
-**Example**:
+**Exemplo**:
 ```python
 from data_pipeline_agent_lib.specialists import explain_hdl_component, get_hdl_best_practices
 
-# Explain component
+# Explicar componente
 explanation = await explain_hdl_component.ainvoke({
-"component_name": "IngestionControl",
-"include_examples": True
+    "component_name": "IngestionControl",
+    "include_examples": True
 })
 
-# Get best practices
+# Obter melhores práticas
 practices = await get_hdl_best_practices.ainvoke({
-"topic": "error handling"
+    "topic": "tratamento de erros"
 })
 ```
 
@@ -179,196 +179,195 @@ practices = await get_hdl_best_practices.ainvoke({
 
 ### 7. **DPL Coordinator**
 
-**Purpose**: Coordinate reprocessing scenarios
+**Propósito**: Coordenar cenários de reprocessamento
 
-**Tools** (1):
-- `coordinate_hdl_reprocessing` - Reprocessing coordination
+**Ferramentas** (1):
+- `coordinate_hdl_reprocessing` - Coordenação de reprocessamento
 
-**When to use**:
-- Urgent reprocessing needed
-- Client escalation scenarios
-- Need to coordinate with KPI team
+**Quando usar**:
+- Reprocessamento urgente necessário
+- Cenários de escalação do cliente
+- Precisa coordenar com equipe KPI
 
-**Example**:
+**Exemplo**:
 ```python
 from data_pipeline_agent_lib.specialists import coordinate_hdl_reprocessing
 
 result = await coordinate_hdl_reprocessing.ainvoke({
-"entity_name": "tasks",
-"date_range": "2025-10-04",
-"notify_kpi_team": True
+    "entity_name": "tasks",
+    "date_range": "2025-10-04",
+    "notify_kpi_team": True
 })
 ```
 
 ---
 
-## Tool Registry
+## Registro de Ferramentas
 
-All tools are registered and categorized:
+Todas as ferramentas são registradas e categorizadas:
 
 ```python
 from data_pipeline_agent_lib.specialists import (
-ALL_DPL_TOOLS, # All 10 tools
-TROUBLESHOOTING_TOOLS, # 3 tools
-OPTIMIZATION_TOOLS, # 2 tools
-OPERATIONAL_TOOLS, # 3 tools
-DOCUMENTATION_TOOLS, # 2 tools
-get_tools_for_intent # Helper function
+    ALL_DPL_TOOLS,  # Todas as 10 ferramentas
+    TROUBLESHOOTING_TOOLS,  # 3 ferramentas
+    OPTIMIZATION_TOOLS,  # 2 ferramentas
+    OPERATIONAL_TOOLS,  # 3 ferramentas
+    DOCUMENTATION_TOOLS,  # 2 ferramentas
+    get_tools_for_intent  # Função auxiliar
 )
 
-# Get tools by intent
+# Obter ferramentas por intenção
 troubleshooting = get_tools_for_intent("troubleshooting")
 optimization = get_tools_for_intent("optimization")
 ```
 
 ---
 
-## Specialist Architecture
+## Arquitetura do Especialista
 
-Each specialist is implemented as a **LangChain Tool**:
+Cada especialista é implementado como uma **Ferramenta LangChain**:
 
 ```python
 from langchain.tools import tool
 
 @tool
 async def troubleshoot_hdl_error(
-error_message: str,
-entity_name: str = None,
-pipeline_type: str = None
+    error_message: str,
+    entity_name: str = None,
+    pipeline_type: str = None
 ) -> str:
-"""
-Diagnose DPL pipeline errors with pattern matching and root cause analysis.
-
-Args:
-error_message: The error message or symptom
-entity_name: Optional DPL entity (visits, tasks, etc.)
-pipeline_type: Optional pipeline type (streaming, batch)
-
-Returns:
-Detailed diagnosis with investigation steps
-"""
-# Implementation here
-return diagnosis
+    """
+    Diagnosticar erros de pipeline DPL com correspondência de padrões e análise de causa raiz.
+    
+    Args:
+        error_message: A mensagem de erro ou sintoma
+        entity_name: Entidade DPL opcional (visits, tasks, etc.)
+        pipeline_type: Tipo de pipeline opcional (streaming, batch)
+        
+    Returns:
+        Diagnóstico detalhado com etapas de investigação
+    """
+    # Implementação aqui
+    return diagnosis
 ```
 
-**Key Features**:
-- Async support
+**Recursos Principais**:
+- Suporte assíncrono
 - Type hints
-- Docstring for LLM understanding
-- Structured input/output
+- Docstring para compreensão do LLM
+- Entrada/saída estruturada
 
 ---
 
-## Integration with LangGraph
+## Integração com LangGraph
 
-Specialists are integrated into the agent workflow:
+Especialistas são integrados no workflow do agent:
 
 ```python
 from data_pipeline_agent_lib.agent import create_data_pipeline_agent_graph
 from data_pipeline_agent_lib.agent.state import create_initial_state
 
-# Create agent (specialists automatically included)
+# Criar agent (especialistas automaticamente incluídos)
 agent = create_data_pipeline_agent_graph()
 
-# Ask question
+# Fazer pergunta
 state = create_initial_state(
-query="Why is the visits streaming pipeline timing out?",
-session_id="session_001"
+    query="Por que o pipeline de streaming visits está expirando?",
+    session_id="session_001"
 )
 
-# Agent intelligently selects and uses specialists
+# Agent seleciona e usa especialistas inteligentemente
 result = await agent.ainvoke(state)
 ```
 
-**Agent Workflow**:
-1. **Analyze Intent** → Determine user's goal
-2. **Select Tools** → Choose relevant specialists
-3. **Execute Tools** → Run specialists
-4. **Aggregate Results** → Combine outputs
-5. **Generate Response** → Create final answer
+**Workflow do Agent**:
+1. **Analisar Intenção** → Determinar objetivo do usuário
+2. **Selecionar Ferramentas** → Escolher especialistas relevantes
+3. **Executar Ferramentas** → Executar especialistas
+4. **Agregar Resultados** → Combinar saídas
+5. **Gerar Resposta** → Criar resposta final
 
 ---
 
-## Specialist Capabilities Comparison
+## Comparação de Capacidades dos Especialistas
 
-| Specialist | Error Diagnosis | Solutions | Monitoring | Execution | Documentation |
+| Especialista | Diagnóstico de Erro | Soluções | Monitoramento | Execução | Documentação |
 |-----------|----------------|-----------|------------|-----------|---------------|
-| Troubleshooter | | | | | |
-| Bug Resolver | | | | | |
-| Performance Advisor | | | | | |
-| Quality Assistant | | | | | |
-| DPL Commander | | | | | |
-| Ecosystem Assistant | | | | | |
-| DPL Coordinator | | | | | |
+| Troubleshooter | ✓ | | | | |
+| Bug Resolver | | ✓ | | | |
+| Performance Advisor | ✓ | ✓ | | | |
+| Quality Assistant | ✓ | ✓ | | | |
+| DPL Commander | | | ✓ | ✓ | |
+| Ecosystem Assistant | | | | | ✓ |
+| DPL Coordinator | | ✓ | ✓ | | |
 
 ---
 
-## Common Workflows
+## Workflows Comuns
 
-### Troubleshooting → Resolution
+### Troubleshooting → Resolução
 
 ```python
-# Step 1: Diagnose
+# Passo 1: Diagnosticar
 diagnosis = await troubleshoot_hdl_error.ainvoke({
-"error_message": "SCD2 broken",
-"entity_name": "visits"
+    "error_message": "SCD2 quebrado",
+    "entity_name": "visits"
 })
 
-# Step 2: Get solution
+# Passo 2: Obter solução
 solution = await resolve_hdl_bug.ainvoke({
-"bug_description": "SCD2 is_current incorrect",
-"entity_name": "visits"
+    "bug_description": "SCD2 is_current incorreto",
+    "entity_name": "visits"
 })
 ```
 
-### Performance → Quality
+### Performance → Qualidade
 
 ```python
-# Step 1: Optimize
+# Passo 1: Otimizar
 optimization = await optimize_hdl_pipeline.ainvoke({
-"pipeline_name": "dpl-stream-visits",
-"performance_issue": "slow processing"
+    "pipeline_name": "dpl-stream-visits",
+    "performance_issue": "processamento lento"
 })
 
-# Step 2: Validate
+# Passo 2: Validar
 validation = await validate_hdl_data_quality.ainvoke({
-"entity_name": "visits",
-"quality_dimension": "all"
+    "entity_name": "visits",
+    "quality_dimension": "all"
 })
 ```
 
-### Execute → Monitor
+### Executar → Monitorar
 
 ```python
-# Step 1: Execute
+# Passo 1: Executar
 exec_result = await execute_hdl_workflow.ainvoke({
-"workflow_name": "dpl-stream-visits"
+    "workflow_name": "dpl-stream-visits"
 })
 
-# Step 2: Monitor
+# Passo 2: Monitorar
 status = await get_workflow_status.ainvoke({
-"workflow_name": "dpl-stream-visits"
+    "workflow_name": "dpl-stream-visits"
 })
 ```
 
 ---
 
-## Next Steps
+## Próximos Passos
 
-### Explore More
+### Explorar Mais
 
-- **[Examples](../examples/basic.md)** - Practical usage examples
-- **[API Reference](../api/specialists.md)** - Complete API documentation
-- **[Architecture](../architecture/clean-architecture.md)** - Design principles
-- **[Testing](../testing/test-results.md)** - Test coverage and results
+- **[Exemplos](../examples/basic.md)** - Exemplos práticos de uso
+- **[Referência da API](../api/specialists.md)** - Documentação completa da API
+- **[Arquitetura](../architecture/clean-architecture.md)** - Princípios de design
+- **[Testes](../testing/test-results.md)** - Cobertura e resultados de testes
 
-### Individual Specialist Details
+### Detalhes dos Especialistas Individuais
 
-All specialists are documented above with:
-- Purpose and capabilities
-- Available tools
-- When to use
-- Code examples
+Todos os especialistas estão documentados acima com:
+- Propósito e capacidades
+- Ferramentas disponíveis
+- Quando usar
+- Exemplos de código
 
-For detailed API signatures, see the [API Reference](../api/specialists.md).
-
+Para assinaturas detalhadas da API, veja a [Referência da API](../api/specialists.md).

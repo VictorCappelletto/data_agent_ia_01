@@ -1,42 +1,42 @@
-# Configuration Guide
+# Guia de Configuração
 
-Configure DPL Agent for different environments and use cases.
+Configure o DPL Agent para diferentes ambientes e casos de uso.
 
 ---
 
-## Environment Variables
+## Variáveis de Ambiente
 
-### Required for Full Agent
+### Requerido para Agent Completo
 
 ```bash
-# Anthropic API Key (for LLM)
+# Chave API Anthropic (para LLM)
 ANTHROPIC_API_KEY=sk-ant-api03-...
 
-# OpenAI API Key (for embeddings)
+# Chave API OpenAI (para embeddings)
 OPENAI_API_KEY=sk-...
 ```
 
-### Optional Configuration
+### Configuração Opcional
 
 ```bash
-# Environment (DEV, UAT, PRD)
+# Ambiente (DEV, UAT, PRD)
 ENVIRONMENT=PRD
 
-# ChromaDB persistence directory
+# Diretório de persistência ChromaDB
 CHROMA_PERSIST_DIR=/dbfs/data_pipeline_agent/chroma_db
 
-# Logging level
+# Nível de logging
 LOG_LEVEL=INFO
 
-# Max iterations for agent workflow
+# Máximo de iterações para workflow do agent
 MAX_AGENT_ITERATIONS=10
 
-# LLM Configuration
+# Configuração do LLM
 LLM_MODEL=claude-3-5-sonnet-20241022
 LLM_TEMPERATURE=0.1
 LLM_MAX_TOKENS=4096
 
-# Vector Store Configuration
+# Configuração do Vector Store
 VECTOR_STORE_COLLECTION=hdl_knowledge
 EMBEDDING_MODEL=text-embedding-3-small
 TOP_K_RETRIEVAL=5
@@ -44,13 +44,13 @@ TOP_K_RETRIEVAL=5
 
 ---
 
-## Configuration Methods
+## Métodos de Configuração
 
-### 1. Environment File (.env)
+### 1. Arquivo de Ambiente (.env)
 
-**Local Development:**
+**Desenvolvimento Local:**
 
-Create `.env` file in project root:
+Criar arquivo `.env` na raiz do projeto:
 
 ```bash
 # .env
@@ -60,27 +60,27 @@ ENVIRONMENT=DEV
 LOG_LEVEL=DEBUG
 ```
 
-**Load in code:**
+**Carregar no código:**
 
 ```python
 from dotenv import load_dotenv
 load_dotenv()
 ```
 
-### 2. Databricks Secrets
+### 2. Secrets do Databricks
 
-**Setup Secrets:**
+**Configurar Secrets:**
 
 ```bash
-# Create secret scope
+# Criar secret scope
 databricks secrets create-scope --scope ai-agents
 
-# Add secrets
+# Adicionar secrets
 databricks secrets put --scope ai-agents --key anthropic-api-key
 databricks secrets put --scope ai-agents --key openai-api-key
 ```
 
-**Use in Notebook:**
+**Usar no Notebook:**
 
 ```python
 import os
@@ -89,147 +89,147 @@ os.environ["ANTHROPIC_API_KEY"] = dbutils.secrets.get("ai-agents", "anthropic-ap
 os.environ["OPENAI_API_KEY"] = dbutils.secrets.get("ai-agents", "openai-api-key")
 ```
 
-### 3. Direct Configuration
+### 3. Configuração Direta
 
 ```python
 import os
 
-# Set directly in code (NOT recommended for production)
-os.environ["ANTHROPIC_API_KEY"] = "your-key-here"
-os.environ["OPENAI_API_KEY"] = "your-key-here"
+# Definir diretamente no código (NÃO recomendado para produção)
+os.environ["ANTHROPIC_API_KEY"] = "sua-chave-aqui"
+os.environ["OPENAI_API_KEY"] = "sua-chave-aqui"
 ```
 
 ---
 
-## Agent Configuration
+## Configuração do Agent
 
-### Simple Agent (Default)
+### Agent Simples (Padrão)
 
 ```python
 from data_pipeline_agent_lib.agent import create_simple_hdl_graph
 
-# Default configuration
+# Configuração padrão
 agent = create_simple_hdl_graph()
 ```
 
-### Custom Agent Configuration
+### Configuração Customizada do Agent
 
 ```python
 from data_pipeline_agent_lib.agent import create_data_pipeline_agent_graph
 from data_pipeline_agent_lib.infrastructure.vector_store import create_chroma_store
 from data_pipeline_agent_lib.utils.checkpointer import CheckpointerFactory
 
-# Custom vector store
+# Vector store customizado
 vector_store = create_chroma_store(
-persist_directory="/dbfs/data_pipeline_agent/chroma",
-collection_name="hdl_production"
+    persist_directory="/dbfs/data_pipeline_agent/chroma",
+    collection_name="hdl_production"
 )
 
-# Custom checkpointer
+# Checkpointer customizado
 checkpointer = CheckpointerFactory.create_sqlite_checkpointer(
-db_path="/dbfs/data_pipeline_agent/checkpoints.db"
+    db_path="/dbfs/data_pipeline_agent/checkpoints.db"
 )
 
-# Create agent with custom config
+# Criar agent com configuração customizada
 agent = create_data_pipeline_agent_graph(
-vector_store=vector_store,
-checkpointer=checkpointer,
-enable_debug=False
+    vector_store=vector_store,
+    checkpointer=checkpointer,
+    enable_debug=False
 )
 ```
 
 ---
 
-## LLM Provider Configuration
+## Configuração do Provedor LLM
 
-### Anthropic (Default)
+### Anthropic (Padrão)
 
 ```python
 from data_pipeline_agent_lib.infrastructure.llm import create_anthropic_provider
 
 llm = create_anthropic_provider(
-model="claude-3-5-sonnet-20241022",
-temperature=0.1,
-max_tokens=4096
+    model="claude-3-5-sonnet-20241022",
+    temperature=0.1,
+    max_tokens=4096
 )
 ```
 
-### Custom System Prompts
+### Prompts de Sistema Customizados
 
 ```python
 from data_pipeline_agent_lib.infrastructure.llm import get_system_prompt
 
-# Get intent-specific prompt
+# Obter prompt específico para intent
 troubleshooting_prompt = get_system_prompt("troubleshooting")
 architecture_prompt = get_system_prompt("architecture")
 ```
 
 ---
 
-## Vector Store Configuration
+## Configuração do Vector Store
 
-### ChromaDB Configuration
+### Configuração do ChromaDB
 
 ```python
 from data_pipeline_agent_lib.infrastructure.vector_store import create_chroma_store
 
 vector_store = create_chroma_store(
-persist_directory="./data/chroma_db",
-collection_name="hdl_knowledge",
-embedding_model="text-embedding-3-small"
+    persist_directory="./data/chroma_db",
+    collection_name="hdl_knowledge",
+    embedding_model="text-embedding-3-small"
 )
 ```
 
-### Knowledge Loading
+### Carregamento de Conhecimento
 
 ```python
 from data_pipeline_agent_lib.infrastructure.vector_store import create_knowledge_indexer
 
-# Index knowledge base
+# Indexar base de conhecimento
 indexer = create_knowledge_indexer(
-knowledge_path="/dbfs/hdl_knowledge/",
-vector_store=vector_store
+    knowledge_path="/dbfs/hdl_knowledge/",
+    vector_store=vector_store
 )
 
 result = await indexer.index_knowledge_base(clear_existing=True)
-print(f"Indexed {result['chunks_indexed']} chunks from {result['documents_loaded']} documents")
+print(f"Indexados {result['chunks_indexed']} chunks de {result['documents_loaded']} documentos")
 ```
 
 ---
 
-## Specialist Configuration
+## Configuração de Especialistas
 
-### Get Tools by Intent
+### Obter Ferramentas por Intent
 
 ```python
 from data_pipeline_agent_lib.specialists import get_tools_for_intent
 
-# Get troubleshooting tools
+# Obter ferramentas de troubleshooting
 troubleshooting_tools = get_tools_for_intent("troubleshooting")
-# Returns: [troubleshoot_hdl_error, analyze_pipeline_health, resolve_hdl_bug]
+# Retorna: [troubleshoot_hdl_error, analyze_pipeline_health, resolve_hdl_bug]
 
-# Get optimization tools
+# Obter ferramentas de otimização
 optimization_tools = get_tools_for_intent("optimization")
-# Returns: [optimize_hdl_pipeline, validate_hdl_data_quality]
+# Retorna: [optimize_hdl_pipeline, validate_hdl_data_quality]
 ```
 
-### Custom Tool Selection
+### Seleção Customizada de Ferramentas
 
 ```python
 from data_pipeline_agent_lib.specialists import (
-troubleshoot_hdl_error,
-coordinate_hdl_reprocessing,
+    troubleshoot_hdl_error,
+    coordinate_hdl_reprocessing,
 )
 
-# Use only specific tools
+# Usar apenas ferramentas específicas
 my_tools = [troubleshoot_hdl_error, coordinate_hdl_reprocessing]
 ```
 
 ---
 
-## Checkpointer Configuration
+## Configuração do Checkpointer
 
-### Memory Checkpointer (Development)
+### Memory Checkpointer (Desenvolvimento)
 
 ```python
 from data_pipeline_agent_lib.utils.checkpointer import CheckpointerFactory
@@ -237,69 +237,69 @@ from data_pipeline_agent_lib.utils.checkpointer import CheckpointerFactory
 checkpointer = CheckpointerFactory.create_memory_checkpointer()
 ```
 
-**Good for:**
-- Development and testing
-- Temporary sessions
-- Single-user scenarios
+**Bom para:**
+- Desenvolvimento e testes
+- Sessões temporárias
+- Cenários de usuário único
 
-**Limitations:**
-- Data lost when process ends
-- Not suitable for production
+**Limitações:**
+- Dados perdidos quando o processo termina
+- Não adequado para produção
 
-### SQLite Checkpointer (Production)
+### SQLite Checkpointer (Produção)
 
 ```python
 checkpointer = CheckpointerFactory.create_sqlite_checkpointer(
-db_path="/dbfs/data_pipeline_agent/checkpoints.db"
+    db_path="/dbfs/data_pipeline_agent/checkpoints.db"
 )
 ```
 
-**Good for:**
-- Local development with persistence
-- Single-instance deployments
-- Testing with data retention
+**Bom para:**
+- Desenvolvimento local com persistência
+- Deployments de instância única
+- Testes com retenção de dados
 
-**Limitations:**
-- Single-process (no concurrency)
-- Not suitable for distributed systems
+**Limitações:**
+- Processo único (sem concorrência)
+- Não adequado para sistemas distribuídos
 
 ---
 
-## Databricks-Specific Configuration
+## Configuração Específica do Databricks
 
-### Cluster Configuration
+### Configuração do Cluster
 
-**Recommended Runtime:**
-- Databricks Runtime 13.3 LTS or higher
+**Runtime Recomendado:**
+- Databricks Runtime 13.3 LTS ou superior
 - Python 3.9+
 - Spark 3.4+
 
-**Required Libraries:**
+**Bibliotecas Necessárias:**
 - hdl-agent-lib-3.0.0-py3-none-any.whl
-- Dependencies auto-installed
+- Dependências auto-instaladas
 
-### Secrets Configuration
+### Configuração de Secrets
 
 ```python
-# Configure secrets
+# Configurar secrets
 import os
 
-# API Keys
+# Chaves API
 os.environ["ANTHROPIC_API_KEY"] = dbutils.secrets.get("ai-agents", "anthropic-api-key")
 os.environ["OPENAI_API_KEY"] = dbutils.secrets.get("ai-agents", "openai-api-key")
 
-# Databricks Configuration (if needed)
+# Configuração do Databricks (se necessário)
 os.environ["DATABRICKS_HOST"] = dbutils.secrets.get("ai-agents", "databricks-host")
 os.environ["DATABRICKS_TOKEN"] = dbutils.secrets.get("ai-agents", "databricks-token")
 ```
 
-### DBFS Paths
+### Caminhos DBFS
 
 ```python
-# Knowledge base location
+# Localização da base de conhecimento
 KNOWLEDGE_PATH = "/dbfs/data_pipeline_agent/knowledge/"
 
-# ChromaDB persistence
+# Persistência do ChromaDB
 CHROMA_PATH = "/dbfs/data_pipeline_agent/chroma_db/"
 
 # Checkpoints
@@ -308,95 +308,94 @@ CHECKPOINT_PATH = "/dbfs/data_pipeline_agent/checkpoints.db"
 
 ---
 
-## Configuration Validation
+## Validação de Configuração
 
-### Check Configuration
+### Verificar Configuração
 
 ```python
 import os
 
-print("Configuration Status:")
-print(f" ANTHROPIC_API_KEY: {' Set' if os.getenv('ANTHROPIC_API_KEY') else ' Missing'}")
-print(f" OPENAI_API_KEY: {' Set' if os.getenv('OPENAI_API_KEY') else ' Missing'}")
-print(f" ENVIRONMENT: {os.getenv('ENVIRONMENT', 'Not set (defaults to PRD)')}")
+print("Status da Configuração:")
+print(f"✓ ANTHROPIC_API_KEY: {'Configurada' if os.getenv('ANTHROPIC_API_KEY') else '✗ Faltando'}")
+print(f"✓ OPENAI_API_KEY: {'Configurada' if os.getenv('OPENAI_API_KEY') else '✗ Faltando'}")
+print(f"✓ ENVIRONMENT: {os.getenv('ENVIRONMENT', 'Não configurado (padrão PRD)')}")
 ```
 
-### Test Configuration
+### Testar Configuração
 
 ```python
 from data_pipeline_agent_lib.specialists import troubleshoot_hdl_error
 
-# Test specialist (works without API keys)
+# Testar especialista (funciona sem chaves API)
 try:
-result = await troubleshoot_hdl_error.ainvoke({
-"error_message": "test",
-"entity_name": "visits"
-})
-print(" Specialists working")
+    result = await troubleshoot_hdl_error.ainvoke({
+        "error_message": "teste",
+        "entity_name": "visits"
+    })
+    print("✓ Especialistas funcionando")
 except Exception as e:
-print(f" Error: {e}")
+    print(f"✗ Erro: {e}")
 
-# Test LLM (requires API key)
+# Testar LLM (requer chave API)
 if os.getenv("ANTHROPIC_API_KEY"):
-try:
-from data_pipeline_agent_lib.infrastructure.llm import create_anthropic_provider
-llm = create_anthropic_provider()
-print(" LLM provider working")
-except Exception as e:
-print(f" LLM Error: {e}")
+    try:
+        from data_pipeline_agent_lib.infrastructure.llm import create_anthropic_provider
+        llm = create_anthropic_provider()
+        print("✓ Provedor LLM funcionando")
+    except Exception as e:
+        print(f"✗ Erro LLM: {e}")
 else:
-print(" ANTHROPIC_API_KEY not set - LLM features unavailable")
+    print("✗ ANTHROPIC_API_KEY não configurada - recursos LLM indisponíveis")
 ```
 
 ---
 
-## Troubleshooting Configuration
+## Solução de Problemas de Configuração
 
-### Common Issues
+### Problemas Comuns
 
-**Issue**: `ModuleNotFoundError: No module named 'langchain'` 
-**Solution**: Restart cluster after library installation
+**Problema**: `ModuleNotFoundError: No module named 'langchain'` 
+**Solução**: Reiniciar cluster após instalação da biblioteca
 
-**Issue**: `ANTHROPIC_API_KEY not found` 
-**Solution**: Configure Databricks secrets or .env file
+**Problema**: `ANTHROPIC_API_KEY not found` 
+**Solução**: Configurar secrets do Databricks ou arquivo .env
 
-**Issue**: `ChromaDB persistence error` 
-**Solution**: Ensure DBFS path exists and has write permissions
+**Problema**: `ChromaDB persistence error` 
+**Solução**: Garantir que o caminho DBFS existe e tem permissões de escrita
 
 ---
 
-## Best Practices
+## Melhores Práticas
 
-### Development
+### Desenvolvimento
 
 ```python
-# Use .env file
-# Use memory checkpointer
-# Enable debug logging
-# Use small knowledge base
+# Usar arquivo .env
+# Usar memory checkpointer
+# Habilitar logging de debug
+# Usar base de conhecimento pequena
 ```
 
-### Production
+### Produção
 
 ```python
-# Use Databricks Secrets for API keys
-# Use SQLite checkpointer
-# Use DBFS for persistence
-# Monitor resource usage
+# Usar Databricks Secrets para chaves API
+# Usar SQLite checkpointer
+# Usar DBFS para persistência
+# Monitorar uso de recursos
 ```
 
 ---
 
-## Next Steps
+## Próximos Passos
 
-- Configure your environment
-- Test with specialists
-- Load knowledge base
-- Try complete agent
-- Deploy to production
+- Configurar seu ambiente
+- Testar com especialistas
+- Carregar base de conhecimento
+- Experimentar agent completo
+- Deploy para produção
 
-For more details, see:
-- [Installation Guide](installation.md)
-- [Architecture Overview](../architecture/clean-architecture.md)
-- [Examples](../examples/basic.md)
-
+Para mais detalhes, veja:
+- [Guia de Instalação](installation.md)
+- [Visão Geral da Arquitetura](../architecture/clean-architecture.md)
+- [Exemplos](../examples/basic.md)

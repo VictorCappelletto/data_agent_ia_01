@@ -1,285 +1,287 @@
 # Data Pipeline Agent
 
-An intelligent AI agent specialized in troubleshooting, monitoring, and optimizing data pipeline operations.
+Um agent AI inteligente especializado em troubleshooting, monitoramento e otimização de operações de pipeline de dados.
 
-## Overview
+## Visão Geral
 
-The Data Pipeline Agent (DPL Agent) is a production-ready AI system built with Clean Architecture principles, featuring:
+O Data Pipeline Agent (DPL Agent) é um sistema AI pronto para produção construído com princípios de Clean Architecture, apresentando:
 
-- **7 Specialized Tools** for pipeline operations
-- **RAG System** with semantic search over 66 knowledge base documents
-- **LangGraph Orchestration** for stateful multi-agent workflows
-- **Clean Architecture** with clear separation of concerns
-- **136 Unit Tests** with 51% code coverage
-- **Production Deployment** ready for Databricks clusters
+- **7 Ferramentas Especializadas** para operações de pipeline
+- **Sistema RAG** com busca semântica sobre 66 documentos da base de conhecimento
+- **Orquestração LangGraph** para workflows multi-agent com estado
+- **Arquitetura Limpa** com clara separação de responsabilidades
+- **136 Testes Unitários** com 51% de cobertura de código
+- **Deploy em Produção** pronto para clusters Databricks
 
-## Features
+## Funcionalidades
 
-### Core Capabilities
+### Capacidades Principais
 
-1. **Troubleshooting**: Diagnose pipeline errors and issues
-2. **Bug Resolution**: Provide step-by-step fixes for common problems
-3. **Performance Optimization**: Analyze and improve pipeline efficiency
-4. **Quality Assurance**: Validate data quality and completeness
-5. **Workflow Execution**: Monitor and control pipeline workflows
-6. **Documentation**: Access component documentation and best practices
-7. **Coordination**: Manage reprocessing and data recovery
+1. **Troubleshooting**: Diagnosticar erros e problemas de pipeline
+2. **Resolução de Bugs**: Fornecer correções passo a passo para problemas comuns
+3. **Otimização de Performance**: Analisar e melhorar eficiência de pipeline
+4. **Garantia de Qualidade**: Validar qualidade e completude de dados
+5. **Execução de Workflow**: Monitorar e controlar workflows de pipeline
+6. **Documentação**: Acessar documentação de componentes e melhores práticas
+7. **Coordenação**: Gerenciar reprocessamento e recuperação de dados
 
-### Technical Stack
+### Stack Técnico
 
-- **LangChain/LangGraph**: Agent orchestration and tool integration
-- **ChromaDB**: Vector store for semantic search
-- **Claude (Anthropic)**: LLM for natural language understanding
-- **Pydantic**: Data validation and serialization
-- **pytest**: Comprehensive testing framework
-- **MkDocs**: Professional documentation
+- **LangChain/LangGraph**: Orquestração de agent e integração de ferramentas
+- **ChromaDB**: Vector store para busca semântica
+- **Claude (Anthropic)**: LLM para compreensão de linguagem natural
+- **Pydantic**: Validação e serialização de dados
+- **pytest**: Framework de testes abrangente
+- **MkDocs**: Documentação profissional
 
-## Quick Start
+## Início Rápido
 
-### Installation
+### Instalação
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/data-pipeline-agent.git
-cd data_pipeline_agent
+# Clonar o repositório
+git clone https://github.com/VictorCappelletto/data_agent_ia_01.git
+cd data_agent_ia_01
 
-# Create virtual environment
+# Criar ambiente virtual
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # No Windows: venv\Scripts\activate
 
-# Install dependencies
+# Instalar dependências
 pip install -r requirements.txt
 ```
 
-### Basic Usage
+### Uso Básico
 
 ```python
-from pipeline_agent_lib.agent import create_agent
+from dpl_agent_lib.agent import create_agent
 
-# Initialize the agent
+# Inicializar o agent
 agent = create_agent()
 
-# Ask a question
+# Fazer uma pergunta
 response = agent.invoke({
-    "messages": [{"role": "user", "content": "Why is the Orders pipeline failing?"}]
+    "messages": [{"role": "user", "content": "Por que o pipeline Orders está falhando?"}]
 })
 
 print(response["messages"][-1]["content"])
 ```
 
-### Run Interactive Chat
+### Executar Chat Interativo
 
 ```bash
 python run_agent.py
 ```
 
-## Architecture
+## Arquitetura
 
-### Clean Architecture Layers
+### Camadas de Arquitetura Limpa
 
 ```
-pipeline_agent_lib/
-├── domain/              # Business entities and rules
-│   ├── entities/        # Core domain objects
-│   ├── value_objects.py # Immutable value types
-│   └── ports/           # Interface definitions
-├── application/         # Use cases and orchestration
-│   └── services/        # Application services (RAG, etc.)
-├── infrastructure/      # External integrations
-│   ├── llm/             # LLM providers (Claude, Databricks)
-│   └── vector_store/    # Vector database integration
-└── specialists/         # 7 specialized tools
+dpl_agent_lib/
+├── domain/              # Entidades e regras de negócio
+│   ├── entities/        # Objetos de domínio principais
+│   ├── value_objects.py # Tipos de valor imutáveis
+│   └── ports/           # Definições de interface
+├── application/         # Casos de uso e orquestração
+│   └── services/        # Serviços de aplicação (RAG, etc.)
+├── infrastructure/      # Integrações externas
+│   ├── llm/             # Provedores LLM (Claude, Databricks)
+│   └── vector_store/    # Integração de banco de dados vetorial
+└── specialists/         # 7 ferramentas especializadas
 ```
 
-### Data Flow
+### Fluxo de Dados
 
-1. **User Query** → Agent receives natural language question
-2. **Intent Analysis** → LangGraph determines which specialists to invoke
-3. **RAG Retrieval** → Semantic search finds relevant documentation
-4. **Tool Execution** → Specialists execute with enhanced context
-5. **Response Generation** → Structured answer with sources
+1. **Consulta do Usuário** → Agent recebe pergunta em linguagem natural
+2. **Análise de Intenção** → LangGraph determina quais especialistas invocar
+3. **Recuperação RAG** → Busca semântica encontra documentação relevante
+4. **Execução de Ferramenta** → Especialistas executam com contexto aprimorado
+5. **Geração de Resposta** → Resposta estruturada com fontes
 
-## Specialists
+## Especialistas
 
 ### 1. Troubleshooter
-Diagnoses errors and provides root cause analysis.
+Diagnostica erros e fornece análise de causa raiz.
 
 ```python
-from pipeline_agent_lib.specialists import troubleshoot_pipeline_error
+from dpl_agent_lib.specialists import troubleshoot_pipeline_error
 
 result = troubleshoot_pipeline_error(
-    error_message="Connection timeout to database",
+    error_message="Timeout de conexão ao banco de dados",
     pipeline_name="orders-ingestion"
 )
 ```
 
 ### 2. Bug Resolver
-Provides step-by-step solutions for known issues.
+Fornece soluções passo a passo para problemas conhecidos.
 
 ### 3. Performance Advisor
-Analyzes pipeline performance and suggests optimizations.
+Analisa performance de pipeline e sugere otimizações.
 
 ### 4. Quality Assistant
-Validates data quality and identifies anomalies.
+Valida qualidade de dados e identifica anomalias.
 
 ### 5. Pipeline Commander
-Monitors and controls workflow executions.
+Monitora e controla execuções de workflow.
 
 ### 6. Ecosystem Assistant
-Provides documentation and best practices.
+Fornece documentação e melhores práticas.
 
 ### 7. Pipeline Coordinator
-Manages reprocessing and data recovery operations.
+Gerencia operações de reprocessamento e recuperação de dados.
 
-## Configuration
+## Configuração
 
-### Environment Variables
+### Variáveis de Ambiente
 
 ```bash
-# Required for local development
-export ANTHROPIC_API_KEY="your-api-key-here"
+# Necessário para desenvolvimento local
+export ANTHROPIC_API_KEY="sua-chave-api-aqui"
 
-# Optional: Custom configuration
+# Opcional: Configuração customizada
 export DPL_ENVIRONMENT="production"
 export VECTOR_STORE_PATH="./chroma_db"
 ```
 
-### Databricks Deployment
+### Deploy no Databricks
 
-The agent integrates natively with Databricks Serving Endpoints for production use:
+O agent integra nativamente com Databricks Serving Endpoints para uso em produção:
 
 ```python
-from pipeline_agent_lib.infrastructure.llm import get_databricks_claude
+from dpl_agent_lib.infrastructure.llm import get_databricks_claude
 
-# Uses Databricks native LLM serving
+# Usa serving LLM nativo do Databricks
 llm = get_databricks_claude(
     endpoint="databricks-meta-llama-3-1-70b-instruct",
     max_tokens=4096
 )
 ```
 
-See `databricks_examples/` for complete notebooks.
+Veja `databricks_examples/` para notebooks completos.
 
-## Testing
+## Testes
 
 ```bash
-# Run all tests
+# Executar todos os testes
 pytest
 
-# Run with coverage
-pytest --cov=pipeline_agent_lib --cov-report=html
+# Executar com cobertura
+pytest --cov=dpl_agent_lib --cov-report=html
 
-# Run only unit tests
+# Executar apenas testes unitários
 pytest tests/unit/
 
-# Run E2E tests
+# Executar testes E2E
 pytest tests/e2e/ -v
 ```
 
-## Documentation
+## Documentação
 
-Full documentation is available at `docs/` and can be served locally:
+Documentação completa está disponível em `docs/` e pode ser servida localmente:
 
 ```bash
-mkdocs serve
-# Open browser to http://127.0.0.1:8000
+/Users/victorcappelleto/Library/Python/3.9/bin/mkdocs serve
+# Abrir navegador em http://127.0.0.1:8000
 ```
 
-Or use the helper script:
+Ou use o script auxiliar:
 
 ```bash
 ./start_docs.sh
 ```
 
-## Development
+**Documentação Online**: https://victorcappelletto.github.io/data_agent_ia_01/
 
-### Setup Development Environment
+## Desenvolvimento
+
+### Configurar Ambiente de Desenvolvimento
 
 ```bash
-# Install dev dependencies
+# Instalar dependências de dev
 pip install -r requirements-dev.txt
 
-# Install pre-commit hooks
+# Instalar hooks pre-commit
 pre-commit install
 
-# Run code quality checks
+# Executar verificações de qualidade de código
 pre-commit run --all-files
 ```
 
-### Project Structure
+### Estrutura do Projeto
 
-- `pipeline_agent_lib/` - Main Python package
-- `docs/` - MkDocs documentation
-- `tests/` - Unit, integration, and E2E tests
-- `examples/` - Usage examples
-- `databricks_examples/` - Databricks deployment notebooks
-- `workflow_hdl/` - Sample workflow configurations
+- `dpl_agent_lib/` - Pacote Python principal
+- `docs/` - Documentação MkDocs
+- `tests/` - Testes unitários, integração e E2E
+- `examples/` - Exemplos de uso
+- `databricks_examples/` - Notebooks de deploy Databricks
+- `workflow_hdl/` - Configurações de workflow de exemplo
 
-## Deployment
+## Deploy
 
-### Build Wheel Package
+### Construir Pacote Wheel
 
 ```bash
 python setup.py bdist_wheel
 ```
 
-The `.whl` file will be created in `dist/` and can be installed on Databricks clusters:
+O arquivo `.whl` será criado em `dist/` e pode ser instalado em clusters Databricks:
 
 ```python
-# In Databricks notebook
-%pip install /path/to/pipeline_agent_lib-3.1.0-py3-none-any.whl
+# Em notebook Databricks
+%pip install /path/to/data_pipeline_agent_lib-3.1.0-py3-none-any.whl
 ```
 
-### Production Checklist
+### Checklist de Produção
 
-- [ ] Set production environment variables
-- [ ] Configure Databricks serving endpoints
-- [ ] Load knowledge base into vector store
-- [ ] Run full test suite
-- [ ] Deploy wheel package to cluster
-- [ ] Monitor initial agent responses
+- [ ] Definir variáveis de ambiente de produção
+- [ ] Configurar serving endpoints do Databricks
+- [ ] Carregar base de conhecimento no vector store
+- [ ] Executar suite completa de testes
+- [ ] Deploy do pacote wheel no cluster
+- [ ] Monitorar respostas iniciais do agent
 
-## Contributing
+## Contribuindo
 
-Contributions are welcome! Please:
+Contribuições são bem-vindas! Por favor:
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Faça fork do repositório
+2. Crie uma branch de feature (`git checkout -b feature/funcionalidade-incrivel`)
+3. Commit suas mudanças (`git commit -m 'Adicionar funcionalidade incrível'`)
+4. Push para a branch (`git push origin feature/funcionalidade-incrivel`)
+5. Abra um Pull Request
 
-### Coding Standards
+### Padrões de Código
 
-- Use type hints for all functions
-- Add docstrings following Google style
-- Write unit tests for new features
-- Run pre-commit hooks before committing
-- Follow Clean Architecture principles
-- Use professional logging (no print statements)
+- Use type hints para todas as funções
+- Adicione docstrings seguindo estilo Google
+- Escreva testes unitários para novas funcionalidades
+- Execute hooks pre-commit antes de commitar
+- Siga princípios de Clean Architecture
+- Use logging profissional (sem declarações print)
 
-## License
+## Licença
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-## Acknowledgments
+## Agradecimentos
 
-Built with:
-- [LangChain](https://github.com/langchain-ai/langchain) - LLM application framework
-- [LangGraph](https://github.com/langchain-ai/langgraph) - Stateful agent orchestration
-- [Anthropic Claude](https://www.anthropic.com/) - Large language model
-- [ChromaDB](https://www.trychroma.com/) - Vector database
-- [MkDocs](https://www.mkdocs.org/) - Documentation generator
+Construído com:
+- [LangChain](https://github.com/langchain-ai/langchain) - Framework de aplicação LLM
+- [LangGraph](https://github.com/langchain-ai/langgraph) - Orquestração de agent com estado
+- [Anthropic Claude](https://www.anthropic.com/) - Modelo de linguagem grande
+- [ChromaDB](https://www.trychroma.com/) - Banco de dados vetorial
+- [MkDocs](https://www.mkdocs.org/) - Gerador de documentação
 
-## Support
+## Suporte
 
-For issues, questions, or contributions:
-- Open an issue on GitHub
-- Check the documentation at `/docs`
-- Review examples in `/examples`
+Para problemas, questões ou contribuições:
+- Abra uma issue no GitHub
+- Verifique a documentação em `/docs` ou online
+- Revise exemplos em `/examples`
 
 ---
 
-**Version**: 3.1.0  
-**Status**: Production Ready  
-**Last Updated**: 2025
+**Versão**: 3.1.0  
+**Status**: Pronto para Produção  
+**Última Atualização**: 2025-10-05

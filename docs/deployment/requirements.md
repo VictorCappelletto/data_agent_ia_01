@@ -1,345 +1,345 @@
-# Project Requirements & Context
+# Requisitos do Projeto & Contexto
 
-This page documents the original requirements and context needed to adapt this agent for your specific environment.
-
----
-
-## Overview
-
-This Data Pipeline Agent was originally developed for a **real-world enterprise data platform** serving a large-scale B2B operations system. The code has been anonymized for public release, but the underlying architecture and patterns are production-tested.
+Esta página documenta os requisitos originais e o contexto necessário para adaptar este agent para seu ambiente específico.
 
 ---
 
-## What Was Anonymized
+## Visão Geral
 
-To make this project publicly shareable, the following elements were replaced with generic equivalents:
+Este Data Pipeline Agent foi originalmente desenvolvido para uma **plataforma de dados empresarial real** servindo um sistema de operações B2B em larga escala. O código foi anonimizado para release público, mas a arquitetura e padrões subjacentes são testados em produção.
 
-### Company & Product Names
+---
 
-| Original (Real System) | Anonymized (Public Code) | Description |
+## O Que Foi Anonimizado
+
+Para tornar este projeto publicamente compartilhável, os seguintes elementos foram substituídos por equivalentes genéricos:
+
+### Nomes de Empresa & Produto
+
+| Original (Sistema Real) | Anonimizado (Código Público) | Descrição |
 |------------------------|--------------------------|-------------|
-| AB InBev | TechCorp Inc | Company name |
-| BEES Platform | DataHub | Product platform name |
-| Frontline Strategy | Operations Platform | Project area |
-| Force Data Platform | Platform Data Platform | System name |
+| AB InBev | TechCorp Inc | Nome da empresa |
+| BEES Platform | DataHub | Nome da plataforma do produto |
+| Frontline Strategy | Operations Platform | Área do projeto |
+| Force Data Platform | Platform Data Platform | Nome do sistema |
 
-### Technical System Names
+### Nomes de Sistemas Técnicos
 
-| Original | Anonymized | Purpose |
+| Original | Anonimizado | Propósito |
 |----------|------------|---------|
-| HDL (High-Level Data) | DPL (Data Pipeline Layer) | Core data layer name |
-| GHQ_B2B_Delta | enterprise_data_platform | Production catalog name |
+| HDL (High-Level Data) | DPL (Data Pipeline Layer) | Nome da camada de dados principal |
+| GHQ_B2B_Delta | enterprise_data_platform | Nome do catálogo de produção |
 
-### Data Entities
+### Entidades de Dados
 
-| Original Entity | Anonymized | Business Context |
+| Entidade Original | Anonimizada | Contexto de Negócio |
 |----------------|------------|------------------|
-| Tasks | Orders | Sales representative tasks |
-| Visits | Sessions | Customer visit records |
-| VendorGroups | PartnerGroups | Vendor/supplier groupings |
-| UserClientCatalog | UserProductCatalog | User-client product catalog |
-| ActivityStaging | EventStaging | Activity staging area |
-| OnTapUserVisits | UserSessions | On-premise user visit tracking |
-| OfflineOrders | LocalTransactions | Offline order synchronization |
-| OrdersCartSuggestion | CartRecommendations | AI-powered cart suggestions |
+| Tasks | Orders | Tarefas de representantes de vendas |
+| Visits | Sessions | Registros de visitas a clientes |
+| VendorGroups | PartnerGroups | Agrupamentos de fornecedores |
+| UserClientCatalog | UserProductCatalog | Catálogo de produtos usuário-cliente |
+| ActivityStaging | EventStaging | Área de staging de atividades |
+| OnTapUserVisits | UserSessions | Rastreamento de visitas de usuários on-premise |
+| OfflineOrders | LocalTransactions | Sincronização de pedidos offline |
+| OrdersCartSuggestion | CartRecommendations | Sugestões de carrinho com IA |
 
-### Infrastructure
+### Infraestrutura
 
-| Original | Anonymized | Notes |
+| Original | Anonimizado | Notas |
 |----------|------------|-------|
-| Azure DevOps | GitHub | Repository hosting |
-| Internal email domains | example.com | Contact information |
-| Specific Azure regions | Generic cloud | Regional deployments |
+| Azure DevOps | GitHub | Hospedagem de repositório |
+| Domínios de email internos | example.com | Informações de contato |
+| Regiões Azure específicas | Nuvem genérica | Deployments regionais |
 
 ---
 
-## What You Need to Adapt
+## O Que Você Precisa Adaptar
 
-To make this agent work in **your environment**, you'll need to configure:
+Para fazer este agent funcionar em **seu ambiente**, você precisará configurar:
 
-### 1. Databricks Environment
+### 1. Ambiente Databricks
 
-**Required**:
-- Databricks workspace (AWS, Azure, or GCP)
-- Unity Catalog enabled
-- Databricks Model Serving endpoint for Claude or similar LLM
+**Necessário**:
+- Workspace Databricks (AWS, Azure ou GCP)
+- Unity Catalog habilitado
+- Endpoint Databricks Model Serving para Claude ou LLM similar
 
-**Configuration**:
+**Configuração**:
 ```python
-# In your Databricks notebook or environment
-DATABRICKS_HOST = "https://your-workspace.cloud.databricks.com"
-DATABRICKS_TOKEN = dbutils.secrets.get(scope="your-scope", key="token")
-MODEL_SERVING_ENDPOINT = "your-claude-endpoint"  # or GPT-4, Llama, etc.
+# No seu notebook ou ambiente Databricks
+DATABRICKS_HOST = "https://seu-workspace.cloud.databricks.com"
+DATABRICKS_TOKEN = dbutils.secrets.get(scope="seu-scope", key="token")
+MODEL_SERVING_ENDPOINT = "seu-endpoint-claude"  # ou GPT-4, Llama, etc.
 ```
 
-### 2. Data Layer Architecture
+### 2. Arquitetura de Camadas de Dados
 
-The agent expects a **medallion architecture** with these layers:
+O agent espera uma **arquitetura medallion** com estas camadas:
 
 ```
-Bronze Layer (Raw Data)
-└── Streaming tables from event sources
-└── Batch tables from APIs/databases
+Camada Bronze (Dados Brutos)
+└── Tabelas streaming de fontes de eventos
+└── Tabelas batch de APIs/bancos de dados
 
-Silver Layer (Harmonized)
-└── Cleaned and validated data
-└── Business rules applied
+Camada Silver (Harmonizada)
+└── Dados limpos e validados
+└── Regras de negócio aplicadas
 
-Gold Layer (Analytics-Ready)
-└── Aggregated metrics
-└── Business KPIs
-└── Sharing layer for consumption
+Camada Gold (Pronto para Analytics)
+└── Métricas agregadas
+└── KPIs de negócio
+└── Camada de compartilhamento para consumo
 ```
 
-**Your Equivalent**:
-- Map your data layers to the expected structure
-- Update catalog names in `hdl_agent_lib/knowledge/` docs
-- Modify entity names in specialist tools
+**Seu Equivalente**:
+- Mapear suas camadas de dados para a estrutura esperada
+- Atualizar nomes de catálogos nos docs `hdl_agent_lib/knowledge/`
+- Modificar nomes de entidades nas ferramentas especialistas
 
-### 3. Data Entities
+### 3. Entidades de Dados
 
-The agent knowledge base references these entity types. **Map to your entities**:
+A base de conhecimento do agent referencia estes tipos de entidade. **Mapeie para suas entidades**:
 
-**Streaming Entities** (Real-time event processing):
-- User activity events
-- Transaction events
-- Sensor/IoT data
-- Application logs
+**Entidades Streaming** (Processamento de eventos em tempo real):
+- Eventos de atividade do usuário
+- Eventos de transação
+- Dados de sensores/IoT
+- Logs de aplicação
 
-**Batch Entities** (Scheduled processing):
-- Master data (products, customers, vendors)
-- Historical transactions
-- Reference data
-- External API data
+**Entidades Batch** (Processamento agendado):
+- Dados mestre (produtos, clientes, fornecedores)
+- Transações históricas
+- Dados de referência
+- Dados de APIs externas
 
-**Example Mapping**:
+**Exemplo de Mapeamento**:
 ```yaml
-# Your entities → Agent entities
-your_sales_orders: Orders
-your_customer_visits: Sessions
-your_supplier_groups: PartnerGroups
-your_product_catalog: UserProductCatalog
+# Suas entidades → Entidades do agent
+seus_pedidos_vendas: Orders
+suas_visitas_clientes: Sessions
+seus_grupos_fornecedores: PartnerGroups
+seu_catalogo_produtos: UserProductCatalog
 ```
 
-### 4. Workflow Patterns
+### 4. Padrões de Workflow
 
-The agent understands **Databricks Workflows** with:
+O agent entende **Databricks Workflows** com:
 
-**Streaming Workflows**:
-- Event Hub / Kafka source
-- Auto Loader ingestion
-- Bronze → Silver pipelines
-- File arrival triggers
+**Workflows Streaming**:
+- Event Hub / fonte Kafka
+- Ingestão Auto Loader
+- Pipelines Bronze → Silver
+- Gatilhos de chegada de arquivo
 
-**Batch Workflows**:
-- Scheduled CRON execution
-- MongoDB/CosmosDB sources
-- Bronze → Silver → Gold pipelines
-- Dependency management
+**Workflows Batch**:
+- Execução CRON agendada
+- Fontes MongoDB/CosmosDB
+- Pipelines Bronze → Silver → Gold
+- Gerenciamento de dependências
 
-**Your Equivalent**:
-- Document your workflow JSONs in `workflow_hdl/`
-- Update workflow names and triggers
-- Adjust task dependencies
+**Seu Equivalente**:
+- Documentar seus JSONs de workflow em `workflow_hdl/`
+- Atualizar nomes e gatilhos de workflow
+- Ajustar dependências de tarefas
 
-### 5. Secret Management
+### 5. Gerenciamento de Secrets
 
-The agent expects secrets in **Databricks Secret Scopes**:
+O agent espera secrets em **Databricks Secret Scopes**:
 
 ```python
-# Default pattern
-scope_name = "your-secret-scope"
+# Padrão default
+scope_name = "seu-secret-scope"
 api_key = dbutils.secrets.get(scope=scope_name, key="api-key")
 db_password = dbutils.secrets.get(scope=scope_name, key="db-password")
 ```
 
-**Your Setup**:
+**Sua Configuração**:
 ```bash
-# Create secret scope
-databricks secrets create-scope --scope your-secret-scope
+# Criar secret scope
+databricks secrets create-scope --scope seu-secret-scope
 
-# Add secrets
-databricks secrets put --scope your-secret-scope --key api-key
-databricks secrets put --scope your-secret-scope --key db-password
+# Adicionar secrets
+databricks secrets put --scope seu-secret-scope --key api-key
+databricks secrets put --scope seu-secret-scope --key db-password
 ```
 
-### 6. RAG Knowledge Base
+### 6. Base de Conhecimento RAG
 
-The agent uses **ChromaDB** for RAG. You need to:
+O agent usa **ChromaDB** para RAG. Você precisa:
 
-1. **Update Knowledge Base**:
-   - Edit files in `hdl_agent_lib/knowledge/`
-   - Replace generic workflows with your actual workflows
-   - Document your data entities and pipelines
+1. **Atualizar Base de Conhecimento**:
+   - Editar arquivos em `hdl_agent_lib/knowledge/`
+   - Substituir workflows genéricos pelos seus workflows reais
+   - Documentar suas entidades de dados e pipelines
 
-2. **Load Knowledge**:
+2. **Carregar Conhecimento**:
    ```bash
    python scripts/load_knowledge_base.py
    ```
 
 3. **Embeddings**:
-   - Default: OpenAI embeddings (requires API key)
-   - Alternative: Databricks embeddings, local models, etc.
+   - Padrão: embeddings OpenAI (requer chave API)
+   - Alternativa: embeddings Databricks, modelos locais, etc.
 
-**Configuration**:
+**Configuração**:
 ```python
-# Option 1: OpenAI embeddings (default)
-OPENAI_API_KEY = "your-key"
+# Opção 1: embeddings OpenAI (padrão)
+OPENAI_API_KEY = "sua-chave"
 
-# Option 2: Databricks embeddings
+# Opção 2: embeddings Databricks
 from databricks_genai import embeddings
-embeddings_model = embeddings.get_model("your-embedding-model")
+embeddings_model = embeddings.get_model("seu-modelo-embedding")
 
-# Option 3: Local embeddings (sentence-transformers)
+# Opção 3: embeddings locais (sentence-transformers)
 from sentence_transformers import SentenceTransformer
 model = SentenceTransformer('all-MiniLM-L6-v2')
 ```
 
 ---
 
-## Real-World Context
+## Contexto do Mundo Real
 
-### Original Use Case
+### Caso de Uso Original
 
-The agent was built for a **global B2B beverage distribution platform** serving:
-- 50,000+ sales representatives
-- 1M+ customers
-- 13 streaming pipelines (real-time)
-- 13 batch pipelines (scheduled)
-- Processing 500GB+ daily data
+O agent foi construído para uma **plataforma global de distribuição de bebidas B2B** servindo:
+- 50.000+ representantes de vendas
+- 1M+ clientes
+- 13 pipelines streaming (tempo real)
+- 13 pipelines batch (agendados)
+- Processando 500GB+ de dados diários
 
-### Problems It Solves
+### Problemas Que Resolve
 
-1. **Pipeline Troubleshooting**: Diagnose streaming/batch failures
-2. **Performance Optimization**: Identify bottlenecks, suggest improvements
-3. **Quality Assurance**: Validate data completeness, detect anomalies
-4. **Ecosystem Navigation**: Understand dependencies, workflows
-5. **Operational Support**: Fix bugs, coordinate reprocessing
+1. **Troubleshooting de Pipeline**: Diagnosticar falhas streaming/batch
+2. **Otimização de Performance**: Identificar gargalos, sugerir melhorias
+3. **Garantia de Qualidade**: Validar completude de dados, detectar anomalias
+4. **Navegação de Ecossistema**: Entender dependências, workflows
+5. **Suporte Operacional**: Corrigir bugs, coordenar reprocessamento
 
-### Production Patterns
+### Padrões de Produção
 
-**What Works**:
-- RAG for workflow-specific knowledge
-- Specialist tools for focused tasks
-- LangGraph for complex orchestration
-- Clean Architecture for maintainability
+**O Que Funciona**:
+- RAG para conhecimento específico de workflow
+- Ferramentas especialistas para tarefas focadas
+- LangGraph para orquestração complexa
+- Clean Architecture para manutenibilidade
 
-**What to Adapt**:
-- Entity names and business logic
-- Workflow structures and dependencies
-- Error patterns and alerting
-- Integration points and APIs
+**O Que Adaptar**:
+- Nomes de entidades e lógica de negócio
+- Estruturas de workflow e dependências
+- Padrões de erro e alertas
+- Pontos de integração e APIs
 
 ---
 
-## Minimal Working Example
+## Exemplo Mínimo Funcional
 
-To get the agent working with **minimal changes**:
+Para fazer o agent funcionar com **mudanças mínimas**:
 
-### Step 1: Environment Setup
+### Passo 1: Configuração do Ambiente
 
 ```bash
-# Clone and setup
-git clone https://github.com/your-username/data-pipeline-agent
+# Clonar e configurar
+git clone https://github.com/seu-usuario/data-pipeline-agent
 cd data-pipeline-agent
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Step 2: Configure Credentials
+### Passo 2: Configurar Credenciais
 
 ```bash
-# Create .env file
+# Criar arquivo .env
 cat > .env << EOF
-DATABRICKS_HOST=https://your-workspace.cloud.databricks.com
-DATABRICKS_TOKEN=your-token
-MODEL_SERVING_ENDPOINT=your-claude-endpoint
-OPENAI_API_KEY=your-openai-key  # Optional, for RAG embeddings
+DATABRICKS_HOST=https://seu-workspace.cloud.databricks.com
+DATABRICKS_TOKEN=seu-token
+MODEL_SERVING_ENDPOINT=seu-endpoint-claude
+OPENAI_API_KEY=sua-chave-openai  # Opcional, para embeddings RAG
 EOF
 ```
 
-### Step 3: Update Knowledge Base
+### Passo 3: Atualizar Base de Conhecimento
 
 ```bash
-# Edit your workflows
-vim hdl_agent_lib/knowledge/workflows/streaming/your-pipeline.md
-vim hdl_agent_lib/knowledge/workflows/batch/your-batch-job.md
+# Editar seus workflows
+vim hdl_agent_lib/knowledge/workflows/streaming/seu-pipeline.md
+vim hdl_agent_lib/knowledge/workflows/batch/seu-job-batch.md
 
-# Load into vector store
+# Carregar no vector store
 python scripts/load_knowledge_base.py
 ```
 
-### Step 4: Test Locally
+### Passo 4: Testar Localmente
 
 ```python
 # test_local.py
 from dpl_agent_lib.specialists import diagnose_pipeline_error
 
 result = diagnose_pipeline_error(
-    error_message="Your actual error message",
-    pipeline_name="your-pipeline-name",
-    context="Additional context about the failure"
+    error_message="Sua mensagem de erro real",
+    pipeline_name="nome-do-seu-pipeline",
+    context="Contexto adicional sobre a falha"
 )
 
 print(result)
 ```
 
-### Step 5: Deploy to Databricks
+### Passo 5: Deploy no Databricks
 
 ```python
-# Upload wheel package
+# Upload do pacote wheel
 databricks fs cp dist/dpl_agent_lib-3.1.0-py3-none-any.whl dbfs:/FileStore/wheels/
 
-# Install in cluster
+# Instalar no cluster
 %pip install /dbfs/FileStore/wheels/dpl_agent_lib-3.1.0-py3-none-any.whl
 
-# Use in notebook
+# Usar no notebook
 from dpl_agent_lib.specialists import *
 result = diagnose_pipeline_error(...)
 ```
 
 ---
 
-## Custom Integration Guide
+## Guia de Integração Customizada
 
-### For Your Specific Environment
+### Para Seu Ambiente Específico
 
-1. **Clone the Repository**
+1. **Clonar o Repositório**
    ```bash
-   git clone https://github.com/your-username/data-pipeline-agent
+   git clone https://github.com/seu-usuario/data-pipeline-agent
    cd data-pipeline-agent
    ```
 
-2. **Global Find & Replace**
+2. **Find & Replace Global**
    ```bash
-   # Replace generic names with your actual names
-   find . -type f -name "*.py" -exec sed -i 's/DataHub/YourPlatform/g' {} +
-   find . -type f -name "*.md" -exec sed -i 's/DPL/YourDataLayer/g' {} +
+   # Substituir nomes genéricos pelos seus nomes reais
+   find . -type f -name "*.py" -exec sed -i 's/DataHub/SuaPlataforma/g' {} +
+   find . -type f -name "*.md" -exec sed -i 's/DPL/SuaCamadaDados/g' {} +
    ```
 
-3. **Update Entity Mappings**
+3. **Atualizar Mapeamentos de Entidades**
    ```python
-   # In dpl_agent_lib/domain/entities/
-   # Rename or extend entity classes to match your data model
+   # Em dpl_agent_lib/domain/entities/
+   # Renomear ou estender classes de entidades para corresponder ao seu modelo de dados
    ```
 
-4. **Document Your Workflows**
+4. **Documentar Seus Workflows**
    ```bash
-   # Copy your workflow JSONs
-   cp /path/to/your/workflows/*.json workflow_hdl/
+   # Copiar seus JSONs de workflow
+   cp /caminho/para/seus/workflows/*.json workflow_hdl/
    
-   # Generate documentation
+   # Gerar documentação
    python scripts/generate_workflow_docs.py
    ```
 
-5. **Customize Specialists**
+5. **Customizar Especialistas**
    ```python
-   # In dpl_agent_lib/specialists/
-   # Adjust error patterns, validation rules, and business logic
+   # Em dpl_agent_lib/specialists/
+   # Ajustar padrões de erro, regras de validação e lógica de negócio
    ```
 
-6. **Rebuild Package**
+6. **Reconstruir Pacote**
    ```bash
    python setup.py bdist_wheel
    ```
@@ -348,50 +348,49 @@ result = diagnose_pipeline_error(...)
 
 ## FAQ
 
-### Q: Do I need the exact same data structure?
+### P: Preciso da mesma estrutura de dados exata?
 
-**A**: No. The agent is flexible. Just update the entity names and knowledge base to match your structure.
+**R**: Não. O agent é flexível. Apenas atualize os nomes de entidades e base de conhecimento para corresponder à sua estrutura.
 
-### Q: Can I use a different LLM?
+### P: Posso usar um LLM diferente?
 
-**A**: Yes. The agent supports any LLM accessible via Databricks Model Serving or LangChain integrations (OpenAI, Anthropic, Azure, etc.).
+**R**: Sim. O agent suporta qualquer LLM acessível via Databricks Model Serving ou integrações LangChain (OpenAI, Anthropic, Azure, etc.).
 
-### Q: What if I don't use Databricks?
+### P: E se eu não usar Databricks?
 
-**A**: The core specialist tools work anywhere. You'll need to adapt:
-- LLM integration (replace `databricks_claude.py`)
-- Secret management (replace `dbutils.secrets`)
-- Deployment strategy (Docker, Kubernetes, etc.)
+**R**: As ferramentas especialistas principais funcionam em qualquer lugar. Você precisará adaptar:
+- Integração LLM (substituir `databricks_claude.py`)
+- Gerenciamento de secrets (substituir `dbutils.secrets`)
+- Estratégia de deployment (Docker, Kubernetes, etc.)
 
-### Q: How much effort to adapt?
+### P: Quanto esforço para adaptar?
 
-**A**: Depends on similarity to original system:
-- **Similar architecture**: 1-2 days (update names, knowledge base)
-- **Different architecture**: 1-2 weeks (restructure entities, workflows)
-- **Complete rewrite**: Use as reference architecture only
+**R**: Depende da similaridade com o sistema original:
+- **Arquitetura similar**: 1-2 dias (atualizar nomes, base de conhecimento)
+- **Arquitetura diferente**: 1-2 semanas (reestruturar entidades, workflows)
+- **Reescrita completa**: Usar apenas como arquitetura de referência
 
-### Q: Is the anonymization reversible?
+### P: A anonimização é reversível?
 
-**A**: No. All company-specific details were permanently removed. You'll configure YOUR environment.
-
----
-
-## Support
-
-For questions about adapting this to your environment:
-
-1. **GitHub Issues**: Technical questions and bugs
-2. **GitHub Discussions**: Architecture and design questions
-3. **Documentation**: Read through all docs in `docs/` folder
+**R**: Não. Todos os detalhes específicos da empresa foram permanentemente removidos. Você configurará SEU ambiente.
 
 ---
 
-## License
+## Suporte
 
-This project is open-source under MIT License. You're free to adapt it for any purpose, commercial or non-commercial.
+Para perguntas sobre adaptar isso ao seu ambiente:
+
+1. **GitHub Issues**: Questões técnicas e bugs
+2. **GitHub Discussions**: Questões de arquitetura e design
+3. **Documentação**: Leia todos os docs na pasta `docs/`
 
 ---
 
-**Last Updated**: October 5, 2025  
-**Version**: 3.1.0
+## Licença
 
+Este projeto é open-source sob Licença MIT. Você é livre para adaptá-lo para qualquer propósito, comercial ou não-comercial.
+
+---
+
+**Última Atualização**: 5 de Outubro de 2025  
+**Versão**: 3.1.0

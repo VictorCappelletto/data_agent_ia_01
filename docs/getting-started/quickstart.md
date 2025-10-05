@@ -1,95 +1,95 @@
-# Quick Start
+# Início Rápido
 
-Get started with DPL Agent v3.0 in 5 minutes.
+Comece a usar o DPL Agent v3.0 em 5 minutos.
 
 ---
 
-## Prerequisites
+## Pré-requisitos
 
 - Python 3.9+
-- Databricks workspace or local Python environment
-- Optional: Anthropic API key (for full agent features)
+- Workspace Databricks ou ambiente Python local
+- Opcional: Chave API Anthropic (para recursos completos do agent)
 
 ---
 
-## Installation
+## Instalação
 
 ```python
 # Databricks
 %pip install /dbfs/FileStore/libraries/data_pipeline_agent_lib-3.0.0-py3-none-any.whl
 dbutils.library.restartPython()
 
-# Verify
+# Verificar
 from data_pipeline_agent_lib.specialists import ALL_DPL_TOOLS
-print(f"{len(ALL_DPL_TOOLS)} specialist tools available")
+print(f"{len(ALL_DPL_TOOLS)} ferramentas especialistas disponíveis")
 ```
 
 ---
 
-## Basic Usage
+## Uso Básico
 
-### Troubleshoot Pipeline Error
+### Solucionar Erro de Pipeline
 
 ```python
 from data_pipeline_agent_lib.specialists import troubleshoot_hdl_error
 
 result = troubleshoot_hdl_error(
-    "Sessions streaming pipeline timed out after 90 minutes"
+    "Pipeline de streaming de sessões expirou após 90 minutos"
 )
 
 print(result)
 ```
 
-**Output**:
+**Saída**:
 ```
-TROUBLESHOOTING ANALYSIS
+ANÁLISE DE TROUBLESHOOTING
 
-Diagnosis: Detected timeout error pattern
-Severity: HIGH
-Confidence: 85%
+Diagnóstico: Padrão de erro de timeout detectado
+Severidade: ALTA
+Confiança: 85%
 
-Root Cause Candidates:
-- Large data volume processing
-- Cluster resource constraints
+Candidatos a Causa Raiz:
+- Processamento de grande volume de dados
+- Restrições de recursos do cluster
 
-Investigation Steps:
-1. Check pipeline execution duration
-2. Review cluster resource utilization
-3. Verify data volume processed
-4. Inspect checkpoint location
+Etapas de Investigação:
+1. Verificar duração da execução do pipeline
+2. Revisar utilização de recursos do cluster
+3. Verificar volume de dados processados
+4. Inspecionar localização do checkpoint
 ```
 
-### Optimize Performance
+### Otimizar Performance
 
 ```python
 from data_pipeline_agent_lib.specialists import optimize_hdl_pipeline
 
 recommendations = optimize_hdl_pipeline(
-    "hdl-batch-tasks running 2 hours instead of usual 30 minutes"
+    "hdl-batch-tasks executando por 2 horas ao invés dos 30 minutos habituais"
 )
 
 print(recommendations)
 ```
 
-### Validate Data Quality
+### Validar Qualidade de Dados
 
 ```python
 from data_pipeline_agent_lib.specialists import validate_hdl_data_quality
 
 report = validate_hdl_data_quality(
-    "Check completeness and consistency for visits entity"
+    "Verificar completude e consistência para a entidade visits"
 )
 
 print(report)
 ```
 
-### Coordinate Reprocessing
+### Coordenar Reprocessamento
 
 ```python
 from data_pipeline_agent_lib.specialists import coordinate_hdl_reprocessing
 
 plan = coordinate_hdl_reprocessing(
-    "TASKS entity for October 4th. Client waiting. Notify KPI team."
+    "Entidade TASKS para 4 de outubro. Cliente aguardando. Notificar equipe KPI."
 )
 
 print(plan)
@@ -97,11 +97,11 @@ print(plan)
 
 ---
 
-## Using the Full Agent
+## Usando o Agent Completo
 
-Requires API key configuration.
+Requer configuração de chave API.
 
-### Configure API Keys
+### Configurar Chaves API
 
 ```python
 import os
@@ -111,74 +111,74 @@ os.environ["ANTHROPIC_API_KEY"] = dbutils.secrets.get(
     "hdl-agent-secrets", "anthropic-api-key"
 )
 
-# Local (use .env file)
+# Local (usar arquivo .env)
 from dotenv import load_dotenv
 load_dotenv()
 ```
 
-### Create Agent
+### Criar Agent
 
 ```python
 from data_pipeline_agent_lib.agent import create_simple_hdl_graph
 from data_pipeline_agent_lib.agent.state import create_initial_state
 
-# Initialize agent
+# Inicializar agent
 agent = create_simple_hdl_graph()
 
-# Ask question
+# Fazer pergunta
 state = create_initial_state(
-    query="How do I troubleshoot a timeout in visits streaming pipeline?",
+    query="Como posso solucionar um timeout no pipeline de streaming de visits?",
     session_id="session_001"
 )
 
-# Get response
+# Obter resposta
 result = agent.invoke(state)
 print(result["final_response"])
 ```
 
-### Multi-Turn Conversation
+### Conversa Multi-turno
 
 ```python
 from data_pipeline_agent_lib.utils.checkpointer import create_conversation_config
 
 config = create_conversation_config("thread_001")
 
-# First question
-state1 = create_initial_state("What is SCD2?", "thread_001")
+# Primeira pergunta
+state1 = create_initial_state("O que é SCD2?", "thread_001")
 result1 = agent.invoke(state1, config=config)
 
-# Follow-up (remembers context)
-state2 = create_initial_state("How is it used in DPL?", "thread_001")
+# Pergunta de acompanhamento (lembra do contexto)
+state2 = create_initial_state("Como é usado no DPL?", "thread_001")
 result2 = agent.invoke(state2, config=config)
 ```
 
 ---
 
-## Available Specialists
+## Especialistas Disponíveis
 
 ### Troubleshooting
-- `troubleshoot_hdl_error` - Error diagnosis
-- `analyze_pipeline_health` - Health check
-- `resolve_hdl_bug` - Bug resolution
+- `troubleshoot_hdl_error` - Diagnóstico de erros
+- `analyze_pipeline_health` - Verificação de saúde
+- `resolve_hdl_bug` - Resolução de bugs
 
-### Optimization
-- `optimize_hdl_pipeline` - Performance recommendations
-- `validate_hdl_data_quality` - Quality validation
+### Otimização
+- `optimize_hdl_pipeline` - Recomendações de performance
+- `validate_hdl_data_quality` - Validação de qualidade
 
-### Operations
-- `execute_hdl_workflow` - Workflow execution
-- `get_workflow_status` - Monitoring
-- `coordinate_hdl_reprocessing` - Reprocessing coordination
+### Operações
+- `execute_hdl_workflow` - Execução de workflow
+- `get_workflow_status` - Monitoramento
+- `coordinate_hdl_reprocessing` - Coordenação de reprocessamento
 
-### Documentation
-- `explain_hdl_component` - Component explanations
-- `get_hdl_best_practices` - Best practices
+### Documentação
+- `explain_hdl_component` - Explicação de componentes
+- `get_hdl_best_practices` - Melhores práticas
 
 ---
 
-## Real-World Examples
+## Exemplos do Mundo Real
 
-### Urgent Pipeline Failure
+### Falha Urgente de Pipeline
 
 ```python
 from data_pipeline_agent_lib.specialists import (
@@ -186,53 +186,53 @@ from data_pipeline_agent_lib.specialists import (
     coordinate_hdl_reprocessing
 )
 
-# Diagnose
+# Diagnosticar
 diagnosis = troubleshoot_hdl_error(
-    "URGENT: TASKS batch pipeline timed out. Data not in silver layer."
+    "URGENTE: Pipeline batch TASKS expirou. Dados não estão na camada silver."
 )
 
-# Get reprocessing plan
+# Obter plano de reprocessamento
 plan = coordinate_hdl_reprocessing(
-    "TASKS entity for October 4th. Client waiting. Notify KPI team."
+    "Entidade TASKS para 4 de outubro. Cliente aguardando. Notificar equipe KPI."
 )
 ```
 
-### Performance Investigation
+### Investigação de Performance
 
 ```python
 from data_pipeline_agent_lib.specialists import optimize_hdl_pipeline
 
 advice = optimize_hdl_pipeline(
-    "hdl-batch-orders taking 2 hours instead of usual 30 minutes"
+    "hdl-batch-orders levando 2 horas ao invés dos 30 minutos habituais"
 )
 ```
 
-### Data Quality Check
+### Verificação de Qualidade de Dados
 
 ```python
 from data_pipeline_agent_lib.specialists import validate_hdl_data_quality
 
 report = validate_hdl_data_quality(
-    "Check completeness and consistency for visits entity"
+    "Verificar completude e consistência para a entidade visits"
 )
 ```
 
 ---
 
-## Next Steps
+## Próximos Passos
 
-1. [Installation Guide](installation.md) - Detailed setup
-2. [Specialists Overview](../specialists/overview.md) - All 7 specialists
-3. [Architecture](../architecture/clean-architecture.md) - Design principles
-4. [Examples](../examples/basic.md) - More code examples
-
----
-
-## Support
-
-- **Technical Lead**: Victor Cappelleto
-- **Project**: Operations Strategy - DPL Operations
+1. [Guia de Instalação](installation.md) - Configuração detalhada
+2. [Visão Geral dos Especialistas](../specialists/overview.md) - Todos os 7 especialistas
+3. [Arquitetura](../architecture/clean-architecture.md) - Princípios de design
+4. [Exemplos](../examples/basic.md) - Mais exemplos de código
 
 ---
 
-**Last Updated**: 2025-10-04
+## Suporte
+
+- **Líder Técnico**: Victor Cappelletto
+- **Projeto**: Operations Strategy - DPL Operations
+
+---
+
+**Última Atualização**: 2025-10-04

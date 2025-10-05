@@ -1,48 +1,48 @@
-# Clean Architecture
+# Arquitetura Limpa
 
-DPL Agent implementation of Clean Architecture principles for maintainability and scalability.
-
----
-
-## Core Principles
-
-### Separation of Concerns
-Each layer has a specific responsibility without interference from others.
-
-### Dependency Rule
-Dependencies point inward only. Inner layers have no knowledge of outer layers.
-
-```
-Infrastructure → Application → Domain
-```
-
-### Testability
-Business logic isolated from infrastructure enables straightforward unit testing.
-
-### Technology Independence
-Domain logic remains independent of frameworks, databases, and external services.
+Implementação do DPL Agent dos princípios de Clean Architecture para manutenibilidade e escalabilidade.
 
 ---
 
-## Three-Layer Architecture
+## Princípios Fundamentais
 
-### Domain Layer (Core)
+### Separação de Responsabilidades
+Cada camada tem uma responsabilidade específica sem interferência de outras.
 
-**Location**: `data_pipeline_agent_lib/domain/`
+### Regra de Dependência
+Dependências apontam apenas para dentro. Camadas internas não têm conhecimento das camadas externas.
 
-**Contains**:
-- Entities: `DPLTable`, `DPLPipeline`, `DPLWorkflow`, `DPLError`
-- Value Objects: `Environment`, `PipelineType`, `ErrorSeverity`
-- Ports: Repository interfaces
-- Domain Services: Business rules
+```
+Infraestrutura → Aplicação → Domínio
+```
 
-**Constraints**:
-- No external dependencies
-- Pure Python + Pydantic
-- No framework imports
-- No database/API calls
+### Testabilidade
+Lógica de negócio isolada da infraestrutura permite testes unitários diretos.
 
-**Example**:
+### Independência de Tecnologia
+Lógica de domínio permanece independente de frameworks, bancos de dados e serviços externos.
+
+---
+
+## Arquitetura de Três Camadas
+
+### Camada de Domínio (Core)
+
+**Localização**: `data_pipeline_agent_lib/domain/`
+
+**Contém**:
+- Entidades: `DPLTable`, `DPLPipeline`, `DPLWorkflow`, `DPLError`
+- Objetos de Valor: `Environment`, `PipelineType`, `ErrorSeverity`
+- Portas: Interfaces de repositório
+- Serviços de Domínio: Regras de negócio
+
+**Restrições**:
+- Sem dependências externas
+- Python puro + Pydantic
+- Sem imports de framework
+- Sem chamadas de banco de dados/API
+
+**Exemplo**:
 ```python
 from data_pipeline_agent_lib.domain import DPLPipeline, PipelineType, Environment
 
@@ -53,46 +53,46 @@ pipeline = DPLPipeline(
 )
 ```
 
-### Application Layer
+### Camada de Aplicação
 
-**Location**: `data_pipeline_agent_lib/agent/`, `data_pipeline_agent_lib/specialists/`
+**Localização**: `data_pipeline_agent_lib/agent/`, `data_pipeline_agent_lib/specialists/`
 
-**Contains**:
-- Agent orchestration (LangGraph workflows)
-- Seven specialist tools
-- State management (`AgentState`)
-- Processing nodes
+**Contém**:
+- Orquestração do agent (workflows LangGraph)
+- Sete ferramentas especialistas
+- Gerenciamento de estado (`AgentState`)
+- Nós de processamento
 
-**Dependencies**:
-- Uses Domain layer
-- Uses Infrastructure via interfaces
-- LangChain/LangGraph frameworks
+**Dependências**:
+- Usa camada de Domínio
+- Usa Infraestrutura via interfaces
+- Frameworks LangChain/LangGraph
 
-**Example**:
+**Exemplo**:
 ```python
 from data_pipeline_agent_lib.agent import create_data_pipeline_agent_graph
 from data_pipeline_agent_lib.specialists import troubleshoot_hdl_error
 
 agent = create_data_pipeline_agent_graph()
-result = troubleshoot_hdl_error("timeout error")
+result = troubleshoot_hdl_error("erro de timeout")
 ```
 
-### Infrastructure Layer
+### Camada de Infraestrutura
 
-**Location**: `data_pipeline_agent_lib/infrastructure/`
+**Localização**: `data_pipeline_agent_lib/infrastructure/`
 
-**Contains**:
-- LLM integration (Anthropic, OpenAI)
+**Contém**:
+- Integração LLM (Anthropic, OpenAI)
 - Vector store (ChromaDB)
 - Embeddings (SentenceTransformers)
-- External service adapters
+- Adaptadores de serviços externos
 
-**Dependencies**:
-- Implements Domain ports
-- External libraries (langchain, chromadb, anthropic)
-- No business logic
+**Dependências**:
+- Implementa portas do Domínio
+- Bibliotecas externas (langchain, chromadb, anthropic)
+- Sem lógica de negócio
 
-**Example**:
+**Exemplo**:
 ```python
 from data_pipeline_agent_lib.infrastructure.llm import create_anthropic_provider
 from data_pipeline_agent_lib.infrastructure.vector_store import create_chroma_store
@@ -103,11 +103,11 @@ vector_store = create_chroma_store()
 
 ---
 
-## Dependency Inversion
+## Inversão de Dependência
 
-Domain layer defines requirements via **Ports** (interfaces). Infrastructure provides **concrete implementations**.
+Camada de domínio define requisitos via **Portas** (interfaces). Infraestrutura fornece **implementações concretas**.
 
-### Port (Interface)
+### Porta (Interface)
 
 ```python
 # domain/ports/hdl_repository_port.py
@@ -119,7 +119,7 @@ class VectorStorePort(ABC):
         pass
 ```
 
-### Adapter (Implementation)
+### Adaptador (Implementação)
 
 ```python
 # infrastructure/vector_store/chroma_store.py
@@ -133,9 +133,9 @@ class ChromaVectorStore(VectorStorePort):
 
 ---
 
-## Benefits
+## Benefícios
 
-### Easy Testing
+### Testes Fáceis
 
 ```python
 def test_hdl_pipeline_validation():
@@ -147,58 +147,58 @@ def test_hdl_pipeline_validation():
     assert pipeline.is_batch_pipeline() == True
 ```
 
-### Flexible Infrastructure
+### Infraestrutura Flexível
 
 ```python
-# Swap implementations without changing application code
-vector_store = ChromaVectorStore(...)  # or QdrantVectorStore(...)
+# Trocar implementações sem mudar código da aplicação
+vector_store = ChromaVectorStore(...)  # ou QdrantVectorStore(...)
 agent = create_data_pipeline_agent_graph(vector_store=vector_store)
 ```
 
-### Clear Boundaries
+### Limites Claros
 
-- Domain changes don't affect infrastructure
-- Infrastructure changes don't affect domain
-- Application orchestrates both layers
-
----
-
-## Design Patterns
-
-### Repository Pattern
-Abstract data access via ports/interfaces.
-
-### Factory Pattern
-Create complex objects (agents, vector stores).
-
-### Strategy Pattern
-Interchangeable algorithms (LLM providers, retrievers).
-
-### Dependency Injection
-Pass dependencies explicitly, not hardcoded.
+- Mudanças no domínio não afetam infraestrutura
+- Mudanças na infraestrutura não afetam domínio
+- Aplicação orquestra ambas as camadas
 
 ---
 
-## SOLID Principles
+## Padrões de Design
 
-- **S**ingle Responsibility: Each class has one reason to change
-- **O**pen/Closed: Open for extension, closed for modification
-- **L**iskov Substitution: Implementations replace interfaces seamlessly
-- **I**nterface Segregation: Small, focused interfaces
-- **D**ependency Inversion: Depend on abstractions, not concretions
+### Padrão Repository
+Abstrair acesso a dados via portas/interfaces.
+
+### Padrão Factory
+Criar objetos complexos (agents, vector stores).
+
+### Padrão Strategy
+Algoritmos intercambiáveis (provedores LLM, retrievers).
+
+### Injeção de Dependência
+Passar dependências explicitamente, não hardcoded.
 
 ---
 
-## Real-World Example
+## Princípios SOLID
+
+- **S**ingle Responsibility: Cada classe tem uma razão para mudar
+- **O**pen/Closed: Aberto para extensão, fechado para modificação
+- **L**iskov Substitution: Implementações substituem interfaces perfeitamente
+- **I**nterface Segregation: Interfaces pequenas e focadas
+- **D**ependency Inversion: Depender de abstrações, não concreções
+
+---
+
+## Exemplo do Mundo Real
 
 ```python
-# Domain: Define entity
+# Domínio: Definir entidade
 class DPLError:
     error_message: str
     severity: ErrorSeverity
     entity_name: str
 
-# Application: Use case
+# Aplicação: Caso de uso
 def troubleshoot_hdl_error(input_data: dict) -> str:
     error = DPLError(**input_data)
     docs = vector_store.retrieve_documents(
@@ -208,23 +208,23 @@ def troubleshoot_hdl_error(input_data: dict) -> str:
     diagnosis = analyze_error_pattern(error, docs)
     return diagnosis
 
-# Infrastructure: Concrete implementation
+# Infraestrutura: Implementação concreta
 vector_store = ChromaVectorStore(...)
 ```
 
-**Benefits**:
-- Pure domain logic (`DPLError`, `analyze_error_pattern`)
-- Swappable infrastructure (`ChromaVectorStore`)
-- Clean orchestration in application layer
+**Benefícios**:
+- Lógica de domínio pura (`DPLError`, `analyze_error_pattern`)
+- Infraestrutura intercambiável (`ChromaVectorStore`)
+- Orquestração limpa na camada de aplicação
 
 ---
 
-## Next Steps
+## Próximos Passos
 
-- [Specialists Overview](../specialists/overview.md)
-- [Quick Start Guide](../getting-started/quickstart.md)
-- [API Reference](../api/specialists.md)
+- [Visão Geral dos Especialistas](../specialists/overview.md)
+- [Guia de Início Rápido](../getting-started/quickstart.md)
+- [Referência da API](../api/specialists.md)
 
 ---
 
-**Last Updated**: 2025-10-04
+**Última Atualização**: 2025-10-04

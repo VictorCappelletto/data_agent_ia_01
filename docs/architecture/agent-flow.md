@@ -1,85 +1,85 @@
-# Agent Architecture & Flow
+# Arquitetura & Fluxo do Agent
 
-This page provides visual diagrams explaining how the DPL Agent works internally.
+Esta página fornece diagramas visuais explicando como o DPL Agent funciona internamente.
 
 ---
 
-## High-Level Architecture
+## Arquitetura de Alto Nível
 
 ```mermaid
 graph LR
-    A[User Query] --> B[Agent Core]
-    B --> C[7 Specialists]
-    B <--> D[Knowledge Base<br/>66 files]
-    C --> E[Response]
+    A[Consulta do Usuário] --> B[Núcleo do Agent]
+    B --> C[7 Especialistas]
+    B <--> D[Base de Conhecimento<br/>66 arquivos]
+    C --> E[Resposta]
     
     style B fill:#1565c0,stroke:#333,stroke-width:2px,color:#000
     style D fill:#00acc1,stroke:#333,stroke-width:2px,color:#000
 ```
 
-**Components:**
-- **Agent Core**: LangGraph orchestration + RAG system
-- **7 Specialists**: Troubleshooter, Bug Resolver, Performance, Quality, Commander, Ecosystem, Coordinator
-- **Knowledge Base**: 66 markdown files with DPL documentation
+**Componentes:**
+- **Núcleo do Agent**: Orquestração LangGraph + sistema RAG
+- **7 Especialistas**: Troubleshooter, Bug Resolver, Performance, Quality, Commander, Ecosystem, Coordinator
+- **Base de Conhecimento**: 66 arquivos markdown com documentação DPL
 
 ---
 
-## Agent Execution Flow
+## Fluxo de Execução do Agent
 
 ```mermaid
 sequenceDiagram
-    participant User
+    participant Usuário
     participant Agent
-    participant KB as Knowledge Base
-    participant Specialist
+    participant BC as Base de Conhecimento
+    participant Especialista
     
-    User->>Agent: "Why is visits pipeline timing out?"
-    Agent->>KB: Search relevant docs
-    KB-->>Agent: DPL documentation
-    Agent->>Specialist: Execute troubleshooter
-    Specialist-->>Agent: Diagnosis + steps
-    Agent-->>User: Professional response
+    Usuário->>Agent: "Por que o pipeline visits está expirando?"
+    Agent->>BC: Buscar docs relevantes
+    BC-->>Agent: Documentação DPL
+    Agent->>Especialista: Executar troubleshooter
+    Especialista-->>Agent: Diagnóstico + etapas
+    Agent-->>Usuário: Resposta profissional
 ```
 
-**Steps:**
-1. User asks question
-2. Agent searches knowledge base for context
-3. Agent selects and executes appropriate specialist
-4. Specialist provides diagnosis with sources
-5. Agent returns formatted response
+**Etapas:**
+1. Usuário faz pergunta
+2. Agent busca base de conhecimento por contexto
+3. Agent seleciona e executa especialista apropriado
+4. Especialista fornece diagnóstico com fontes
+5. Agent retorna resposta formatada
 
 ---
 
-## RAG System (Knowledge Retrieval)
+## Sistema RAG (Recuperação de Conhecimento)
 
 ```mermaid
 graph TD
-    A[Specialist needs context] --> B[RAG Service]
-    B --> C[Search Knowledge Base]
-    C --> D{Found?}
-    D -->|Yes| E[Return context + sources]
-    D -->|No| F[Use fallback patterns]
-    E --> G[Enhanced response]
+    A[Especialista precisa de contexto] --> B[Serviço RAG]
+    B --> C[Buscar Base de Conhecimento]
+    C --> D{Encontrou?}
+    D -->|Sim| E[Retornar contexto + fontes]
+    D -->|Não| F[Usar padrões fallback]
+    E --> G[Resposta aprimorada]
     F --> G
     
     style B fill:#00acc1,stroke:#333,stroke-width:2px
 ```
 
-**How it works:**
-- Specialists query the RAG service for relevant documentation
-- RAG searches 66 markdown files using semantic search
-- Returns context with sources if found
-- Falls back to hardcoded patterns if not found
+**Como funciona:**
+- Especialistas consultam o serviço RAG para documentação relevante
+- RAG busca 66 arquivos markdown usando busca semântica
+- Retorna contexto com fontes se encontrado
+- Volta para padrões hardcoded se não encontrado
 
 ---
 
-## Clean Architecture Layers
+## Camadas de Arquitetura Limpa
 
 ```mermaid
 graph BT
-    A[Domain Layer<br/>Entities & Business Rules] 
-    B[Application Layer<br/>Agent & Specialists]
-    C[Infrastructure Layer<br/>Databricks & Vector Store]
+    A[Camada de Domínio<br/>Entidades & Regras de Negócio] 
+    B[Camada de Aplicação<br/>Agent & Especialistas]
+    C[Camada de Infraestrutura<br/>Databricks & Vector Store]
     
     C --> B --> A
     
@@ -87,189 +87,188 @@ graph BT
     style B fill:#1565c0,stroke:#333,stroke-width:2px
 ```
 
-**Layers (Inner to Outer):**
-1. **Domain**: Core business logic (DPL entities, workflows)
-2. **Application**: Agent orchestration, specialists, RAG
-3. **Infrastructure**: External systems (Databricks, Claude, ChromaDB)
+**Camadas (Interna para Externa):**
+1. **Domínio**: Lógica de negócio central (entidades DPL, workflows)
+2. **Aplicação**: Orquestração do agent, especialistas, RAG
+3. **Infraestrutura**: Sistemas externos (Databricks, Claude, ChromaDB)
 
-**Rule**: Dependencies flow inward only (outer layers depend on inner)
+**Regra**: Dependências fluem apenas para dentro (camadas externas dependem das internas)
 
 ---
 
-## Specialist Execution Process
+## Processo de Execução do Especialista
 
 ```mermaid
 graph LR
-    A[Receive Query] --> B[Search Knowledge Base]
-    B --> C[Execute Logic]
-    C --> D[Format Response]
-    D --> E[Return Result]
+    A[Receber Consulta] --> B[Buscar Base de Conhecimento]
+    B --> C[Executar Lógica]
+    C --> D[Formatar Resposta]
+    D --> E[Retornar Resultado]
     
     style B fill:#00acc1,stroke:#333,stroke-width:2px
 ```
 
-**Process:**
-1. **Receive Query**: Get user question
-2. **Search KB**: Find relevant documentation (RAG)
-3. **Execute Logic**: Apply specialist expertise
-4. **Format**: Professional, structured output
-5. **Return**: Back to agent core
+**Processo:**
+1. **Receber Consulta**: Obter pergunta do usuário
+2. **Buscar BC**: Encontrar documentação relevante (RAG)
+3. **Executar Lógica**: Aplicar expertise do especialista
+4. **Formatar**: Saída profissional e estruturada
+5. **Retornar**: De volta ao núcleo do agent
 
 ---
 
-## Agent Workflow States
+## Estados do Workflow do Agent
 
 ```mermaid
 graph LR
-    A[Analyze Intent] --> B[Select Tools]
-    B --> C[Execute Specialists]
-    C --> D[Generate Response]
+    A[Analisar Intenção] --> B[Selecionar Ferramentas]
+    B --> C[Executar Especialistas]
+    C --> D[Gerar Resposta]
     
     style B fill:#1565c0,stroke:#333,stroke-width:2px
     style C fill:#e91e63,stroke:#333,stroke-width:2px
 ```
 
-**States:**
-- **Analyze**: Understand user's goal (troubleshooting? optimization?)
-- **Select**: Choose appropriate specialists
-- **Execute**: Run selected specialists in parallel if needed
-- **Generate**: Create final formatted response
+**Estados:**
+- **Analisar**: Entender objetivo do usuário (troubleshooting? otimização?)
+- **Selecionar**: Escolher especialistas apropriados
+- **Executar**: Executar especialistas selecionados em paralelo se necessário
+- **Gerar**: Criar resposta final formatada
 
 ---
 
-## Tool Selection by Intent
+## Seleção de Ferramenta por Intenção
 
 ```mermaid
 graph TD
-    A[User Query] --> B{What's the intent?}
-    B -->|Error/Issue| C[Troubleshooter]
+    A[Consulta do Usuário] --> B{Qual é a intenção?}
+    B -->|Erro/Problema| C[Troubleshooter]
     B -->|Performance| D[Performance Advisor]
-    B -->|Data Quality| E[Quality Assistant]
-    B -->|Execute/Monitor| F[DPL Commander]
-    B -->|Learn| G[Ecosystem Assistant]
+    B -->|Qualidade de Dados| E[Quality Assistant]
+    B -->|Executar/Monitorar| F[DPL Commander]
+    B -->|Aprender| G[Ecosystem Assistant]
 ```
 
-**Intent Categories:**
-- **Error/Issue**: Uses Troubleshooter + Bug Resolver
-- **Performance**: Uses Performance Advisor
-- **Data Quality**: Uses Quality Assistant
-- **Execute/Monitor**: Uses DPL Commander
-- **Learn/Explain**: Uses Ecosystem Assistant
+**Categorias de Intenção:**
+- **Erro/Problema**: Usa Troubleshooter + Bug Resolver
+- **Performance**: Usa Performance Advisor
+- **Qualidade de Dados**: Usa Quality Assistant
+- **Executar/Monitorar**: Usa DPL Commander
+- **Aprender/Explicar**: Usa Ecosystem Assistant
 
 ---
 
-## Conversation Memory
+## Memória de Conversa
 
 ```mermaid
 graph LR
-    A[User Query 1] --> B[Agent Response 1]
-    B --> C[Stored in Memory]
-    C --> D[User Query 2]
-    D --> E[Agent uses context]
-    E --> F[Response 2]
+    A[Consulta do Usuário 1] --> B[Resposta do Agent 1]
+    B --> C[Armazenado na Memória]
+    C --> D[Consulta do Usuário 2]
+    D --> E[Agent usa contexto]
+    E --> F[Resposta 2]
     
     style C fill:#00acc1,stroke:#333,stroke-width:2px
 ```
 
-**How Memory Works:**
-- Each conversation has a `session_id`
-- Agent stores all interactions in SQLite
-- Follow-up questions use previous context
-- Enables multi-turn conversations
+**Como a Memória Funciona:**
+- Cada conversa tem um `session_id`
+- Agent armazena todas as interações no SQLite
+- Perguntas de acompanhamento usam contexto anterior
+- Permite conversas multi-turno
 
 ---
 
-## 7 Specialists Summary
+## Resumo dos 7 Especialistas
 
 ```mermaid
 graph TB
-    A[DPL Agent] --> B[Troubleshooter<br/>Error diagnosis]
-    A --> C[Bug Resolver<br/>Fix solutions]
-    A --> D[Performance Advisor<br/>Optimization]
-    A --> E[Quality Assistant<br/>Data validation]
-    A --> F[DPL Commander<br/>Workflow execution]
-    A --> G[Ecosystem Assistant<br/>Documentation]
-    A --> H[DPL Coordinator<br/>Reprocessing]
+    A[DPL Agent] --> B[Troubleshooter<br/>Diagnóstico de erros]
+    A --> C[Bug Resolver<br/>Soluções de correção]
+    A --> D[Performance Advisor<br/>Otimização]
+    A --> E[Quality Assistant<br/>Validação de dados]
+    A --> F[DPL Commander<br/>Execução de workflow]
+    A --> G[Ecosystem Assistant<br/>Documentação]
+    A --> H[DPL Coordinator<br/>Reprocessamento]
     
     style B fill:#f44336,stroke:#333,stroke-width:2px
     style D fill:#1565c0,stroke:#333,stroke-width:2px
     style E fill:#4caf50,stroke:#333,stroke-width:2px
 ```
 
-**All 7 Specialists:**
-1. **Troubleshooter**: Diagnose errors and issues
-2. **Bug Resolver**: Provide step-by-step fixes
-3. **Performance Advisor**: Optimize pipeline performance
-4. **Quality Assistant**: Validate data quality
-5. **DPL Commander**: Execute and monitor workflows
-6. **Ecosystem Assistant**: Explain DPL components
-7. **DPL Coordinator**: Coordinate reprocessing scenarios
+**Todos os 7 Especialistas:**
+1. **Troubleshooter**: Diagnosticar erros e problemas
+2. **Bug Resolver**: Fornecer correções passo a passo
+3. **Performance Advisor**: Otimizar performance de pipeline
+4. **Quality Assistant**: Validar qualidade de dados
+5. **DPL Commander**: Executar e monitorar workflows
+6. **Ecosystem Assistant**: Explicar componentes DPL
+7. **DPL Coordinator**: Coordenar cenários de reprocessamento
 
 ---
 
-## Databricks Deployment
+## Deploy no Databricks
 
 ```mermaid
 graph LR
-    A[.whl Package] --> B[Databricks Cluster]
-    B --> C[DPL Agent Running]
+    A[Pacote .whl] --> B[Cluster Databricks]
+    B --> C[DPL Agent Executando]
     C --> D[Claude via<br/>Serving Endpoints]
-    C --> E[DPL Workflows]
+    C --> E[Workflows DPL]
     
     style C fill:#1565c0,stroke:#333,stroke-width:2px
 ```
 
-**Deployment Steps:**
-1. Build `.whl` package (data_pipeline_agent_lib-3.1.0)
-2. Upload to Databricks cluster
-3. Import and use in notebooks
-4. Agent uses Databricks Claude endpoints
-5. Interacts with DPL workflows
+**Etapas de Deploy:**
+1. Build do pacote `.whl` (data_pipeline_agent_lib-3.1.0)
+2. Upload para cluster Databricks
+3. Import e uso em notebooks
+4. Agent usa endpoints Claude do Databricks
+5. Interage com workflows DPL
 
-**No External API Keys Required** - Uses Databricks native services
+**Sem Chaves API Externas Necessárias** - Usa serviços nativos do Databricks
 
 ---
 
-## Error Handling & Fallback
+## Tratamento de Erros & Fallback
 
 ```mermaid
 graph TD
-    A[Specialist Executes] --> B{RAG Found Docs?}
-    B -->|Yes| C[Use KB Context]
-    B -->|No| D[Use Fallback Patterns]
-    C --> E[Return Enhanced Result]
+    A[Especialista Executa] --> B{RAG Encontrou Docs?}
+    B -->|Sim| C[Usar Contexto BC]
+    B -->|Não| D[Usar Padrões Fallback]
+    C --> E[Retornar Resultado Aprimorado]
     D --> E
     
     style C fill:#4caf50,stroke:#333,stroke-width:2px
     style D fill:#f44336,stroke:#333,stroke-width:2px
 ```
 
-**Graceful Degradation:**
-- Agent always tries RAG first for specific knowledge
-- If RAG fails, uses hardcoded fallback patterns
-- System never fails completely
-- All specialists have fallback logic
+**Degradação Graciosa:**
+- Agent sempre tenta RAG primeiro para conhecimento específico
+- Se RAG falha, usa padrões fallback hardcoded
+- Sistema nunca falha completamente
+- Todos os especialistas têm lógica fallback
 
 ---
 
-## Key Architecture Principles
+## Princípios Chave da Arquitetura
 
-**1. Clean Architecture** - Dependencies flow inward, domain protected
+**1. Arquitetura Limpa** - Dependências fluem para dentro, domínio protegido
 
-**2. RAG-First** - Always try knowledge base, fallback if needed
+**2. RAG-First** - Sempre tenta base de conhecimento, fallback se necessário
 
-**3. Graceful Degradation** - System works even if components fail
+**3. Degradação Graciosa** - Sistema funciona mesmo se componentes falharem
 
-**4. Professional Output** - No emojis, structured, actionable
+**4. Saída Profissional** - Sem emojis, estruturada, acionável
 
-**5. Testability** - 136 tests passing (100% core coverage)
+**5. Testabilidade** - 136 testes passando (100% cobertura core)
 
 ---
 
-## Next Steps
+## Próximos Passos
 
-- **[Specialists Overview](../specialists/overview.md)** - All 7 specialists detailed
-- **[Examples](../examples/basic.md)** - Practical code examples
-- **[Clean Architecture](clean-architecture.md)** - Layer responsibilities
-- **[Deployment Guide](../deployment/quickstart.md)** - Deploy to Databricks
-
+- **[Visão Geral dos Especialistas](../specialists/overview.md)** - Todos os 7 especialistas detalhados
+- **[Exemplos](../examples/basic.md)** - Exemplos práticos de código
+- **[Arquitetura Limpa](clean-architecture.md)** - Responsabilidades das camadas
+- **[Guia de Deploy](../deployment/quickstart.md)** - Deploy no Databricks

@@ -1,130 +1,130 @@
 # DPL Agent v3.1
 
-Production-ready AI agent for troubleshooting, monitoring, and optimizing DPL (Data Pipeline Layer) pipelines in Databricks.
+Agent AI pronto para produção para troubleshooting, monitoramento e otimização de pipelines DPL (Data Pipeline Layer) no Databricks.
 
 ---
 
-## Overview
+## Visão Geral
 
-DPL Agent is a specialized AI assistant built with LangChain and LangGraph that automates DPL pipeline operations through seven expert specialist tools with RAG-powered knowledge retrieval.
+DPL Agent é um assistente AI especializado construído com LangChain e LangGraph que automatiza operações de pipeline DPL através de sete ferramentas especialistas com recuperação de conhecimento via RAG.
 
-### Core Capabilities
+### Capacidades Principais
 
-- **Error Diagnosis**: Automated troubleshooting for pipeline failures
-- **Bug Resolution**: Known solutions and resolution guidance
-- **Performance Optimization**: Actionable recommendations for slow pipelines
-- **Data Quality**: Comprehensive validation across quality dimensions
-- **Workflow Management**: Execution coordination and monitoring
-- **Knowledge Base**: DPL architecture and best practices
-- **Reprocessing Coordination**: Data recovery workflows with team notification
-
----
-
-## Architecture
-
-### Clean Architecture Implementation
-- **Domain Layer**: Core business logic and entities
-- **Application Layer**: Use cases and orchestration (7 specialists)
-- **Infrastructure Layer**: LLM, vector store, and external integrations
-
-### RAG System
-- **66 documentation files** as knowledge base (41 core + 25 workflows)
-- **ChromaDB vector store** for semantic search
-- **Context-aware retrieval** with entity and pipeline filtering
-- **Integrated in all specialists** for enhanced responses
-
-### LangGraph Orchestration
-- **Stateful workflows** for multi-turn interactions
-- **Intelligent routing** based on query intent
-- **Tool calling** with specialist selection
-- **Conversation memory** for context preservation
+- **Diagnóstico de Erros**: Troubleshooting automatizado para falhas de pipeline
+- **Resolução de Bugs**: Soluções conhecidas e orientação de resolução
+- **Otimização de Performance**: Recomendações acionáveis para pipelines lentos
+- **Qualidade de Dados**: Validação abrangente em dimensões de qualidade
+- **Gerenciamento de Workflow**: Coordenação de execução e monitoramento
+- **Base de Conhecimento**: Arquitetura DPL e melhores práticas
+- **Coordenação de Reprocessamento**: Workflows de recuperação de dados com notificação de equipe
 
 ---
 
-## Seven Specialist Tools
+## Arquitetura
 
-1. **Troubleshooter** - Error diagnosis and pipeline health analysis
-2. **Bug Resolver** - Known bug solutions and resolution steps
-3. **Performance Advisor** - Optimization strategies and recommendations
-4. **Quality Assistant** - Data quality validation
-5. **DPL Commander** - Workflow execution and monitoring
-6. **Ecosystem Assistant** - Component documentation and best practices
-7. **DPL Coordinator** - Reprocessing coordination and team notification
+### Implementação de Arquitetura Limpa
+- **Camada de Domínio**: Lógica de negócio e entidades principais
+- **Camada de Aplicação**: Casos de uso e orquestração (7 especialistas)
+- **Camada de Infraestrutura**: LLM, vector store e integrações externas
+
+### Sistema RAG
+- **66 arquivos de documentação** como base de conhecimento (41 core + 25 workflows)
+- **Vector store ChromaDB** para busca semântica
+- **Recuperação consciente de contexto** com filtragem de entidade e pipeline
+- **Integrado em todos os especialistas** para respostas aprimoradas
+
+### Orquestração LangGraph
+- **Workflows com estado** para interações multi-turno
+- **Roteamento inteligente** baseado na intenção da consulta
+- **Chamada de ferramentas** com seleção de especialista
+- **Memória de conversa** para preservação de contexto
 
 ---
 
-## Quick Start
+## Sete Ferramentas Especialistas
 
-### Installation
+1. **Troubleshooter** - Diagnóstico de erro e análise de saúde de pipeline
+2. **Bug Resolver** - Soluções de bugs conhecidos e etapas de resolução
+3. **Performance Advisor** - Estratégias de otimização e recomendações
+4. **Quality Assistant** - Validação de qualidade de dados
+5. **DPL Commander** - Execução e monitoramento de workflow
+6. **Ecosystem Assistant** - Documentação de componentes e melhores práticas
+7. **DPL Coordinator** - Coordenação de reprocessamento e notificação de equipe
+
+---
+
+## Início Rápido
+
+### Instalação
 ```python
 # Databricks
 %pip install /dbfs/FileStore/libraries/data_pipeline_agent_lib-3.0.0-py3-none-any.whl
 dbutils.library.restartPython()
 ```
 
-### Basic Usage
+### Uso Básico
 ```python
 from data_pipeline_agent_lib.specialists import troubleshoot_hdl_error
 
-# Diagnose pipeline error
+# Diagnosticar erro de pipeline
 result = troubleshoot_hdl_error(
-    "Timeout error in dpl-stream-visits after 1h30m"
+    "Erro de timeout em dpl-stream-visits após 1h30m"
 )
 print(result)
 ```
 
-**Full Guide**: [Quick Start](deployment/quickstart.md)
+**Guia Completo**: [Início Rápido](deployment/quickstart.md)
 
 ---
 
-## Quality Metrics
+## Métricas de Qualidade
 
-- **136 unit tests** (100% passing)
-- **40 E2E tests** (100% passing)
-- **51% code coverage** (91% for specialists)
-- **Professional output** (emoji-free, structured logging)
-- **RAG integration** (all 7 specialists)
-
----
-
-## Documentation
-
-### Getting Started
-- [Installation](getting-started/installation.md) - Setup for Databricks and local
-- [Quick Start](getting-started/quickstart.md) - Get started in 5 minutes
-- [Configuration](getting-started/configuration.md) - API keys and environment setup
-
-### Deployment
-- [Quick Deployment](deployment/quickstart.md) - Fast deployment guide
-- [Production Deployment](deployment/production-deployment.md) - Complete workflow
-
-### Reference
-- [Architecture](architecture/clean-architecture.md) - Design principles
-- [Specialists](specialists/overview.md) - Tool documentation
-- [API Reference](api/specialists.md) - Detailed API docs
-- [Examples](examples/basic.md) - Code examples
-- [Test Results](testing/test-results.md) - Coverage and quality
+- **136 testes unitários** (100% passando)
+- **40 testes E2E** (100% passando)
+- **51% cobertura de código** (91% para especialistas)
+- **Saída profissional** (sem emoji, logging estruturado)
+- **Integração RAG** (todos os 7 especialistas)
 
 ---
 
-## Package Information
+## Documentação
 
-- **Version**: 3.1.0
-- **Size**: 162 KB
-- **Format**: Python Wheel (.whl)
+### Primeiros Passos
+- [Instalação](getting-started/installation.md) - Configuração para Databricks e local
+- [Início Rápido](getting-started/quickstart.md) - Comece em 5 minutos
+- [Configuração](getting-started/configuration.md) - Chaves API e configuração de ambiente
+
+### Deploy
+- [Deploy Rápido](deployment/quickstart.md) - Guia de deploy rápido
+- [Deploy em Produção](deployment/production-deployment.md) - Workflow completo
+
+### Referência
+- [Arquitetura](architecture/clean-architecture.md) - Princípios de design
+- [Especialistas](specialists/overview.md) - Documentação de ferramentas
+- [Referência da API](api/specialists.md) - Docs detalhados da API
+- [Exemplos](examples/basic.md) - Exemplos de código
+- [Resultados de Testes](testing/test-results.md) - Cobertura e qualidade
+
+---
+
+## Informações do Pacote
+
+- **Versão**: 3.1.0
+- **Tamanho**: 162 KB
+- **Formato**: Python Wheel (.whl)
 - **Python**: >=3.9
-- **Knowledge**: 66 files (41 core + 25 workflows)
-- **Dependencies**: LangChain, LangGraph, ChromaDB, Databricks SDK
+- **Conhecimento**: 66 arquivos (41 core + 25 workflows)
+- **Dependências**: LangChain, LangGraph, ChromaDB, Databricks SDK
 
 ---
 
-## Support
+## Suporte
 
-- **Technical Lead**: Victor Cappelleto
-- **Project**: Operations Strategy - DPL Operations
-- **Documentation**: [MkDocs Site](https://your-docs-url)
+- **Líder Técnico**: Victor Cappelletto
+- **Projeto**: Operations Strategy - DPL Operations
+- **Documentação**: [Site MkDocs](https://victorcappelletto.github.io/data_agent_ia_01/)
 
 ---
 
-**Last Updated**: 2025-10-05  
-**Status**: Production Ready (v3.1.0 - RAG Complete)
+**Última Atualização**: 2025-10-05  
+**Status**: Pronto para Produção (v3.1.0 - RAG Completo)

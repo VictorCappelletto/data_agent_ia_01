@@ -37,36 +37,36 @@ theme:
     - content.code.annotate
 
 nav:
-  - Home: index.md
+  - Início: index.md
   
-  - Getting Started:
-      - Installation: getting-started/installation.md
-      - Quick Start: getting-started/quickstart.md
-      - Configuration: getting-started/configuration.md
+  - Primeiros Passos:
+      - Instalação: getting-started/installation.md
+      - Início Rápido: getting-started/quickstart.md
+      - Configuração: getting-started/configuration.md
   
-  - Deployment:
-      - Quick Start: deployment/quickstart.md
-      - Production Deployment: deployment/production-deployment.md
-      - Requirements & Context: deployment/requirements.md
+  - Deploy:
+      - Início Rápido: deployment/quickstart.md
+      - Deploy em Produção: deployment/production-deployment.md
+      - Requisitos & Contexto: deployment/requirements.md
   
-  - Architecture:
-      - Clean Architecture: architecture/clean-architecture.md
-      - Agent Flow & Diagrams: architecture/agent-flow.md
+  - Arquitetura:
+      - Arquitetura Limpa: architecture/clean-architecture.md
+      - Fluxo do Agent & Diagramas: architecture/agent-flow.md
   
-  - Specialists:
-      - Overview: specialists/overview.md
+  - Especialistas:
+      - Visão Geral: specialists/overview.md
   
-  - Testing:
-      - Test Results: testing/test-results.md
+  - Testes:
+      - Resultados de Testes: testing/test-results.md
   
-  - Development:
-      - Pending Improvements: development/pending-improvements.md
+  - Desenvolvimento:
+      - Melhorias Pendentes: development/pending-improvements.md
   
-  - Examples:
-      - Basic Examples: examples/basic.md
+  - Exemplos:
+      - Exemplos Básicos: examples/basic.md
   
-  - API Reference:
-      - Specialists API: api/specialists.md
+  - Referência da API:
+      - API dos Especialistas: api/specialists.md
 
 plugins:
   - search
