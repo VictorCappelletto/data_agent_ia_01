@@ -1,8 +1,9 @@
 site_name: Data Pipeline Agent
 site_description: AI-powered agent for data pipeline operations with Clean Architecture, RAG, and LangGraph
 site_author: Victor Cappelletto
-repo_url: https://github.com/your-username/data-pipeline-agent
+repo_url: https://github.com/VictorCappelletto/data_agent_ia_01
 edit_uri: edit/main/docs/
+site_url: https://victorcappelletto.github.io/data_agent_ia_01/
 
 theme:
   name: material
@@ -111,9 +112,7 @@ extra:
     provider: mike
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/your-username/data-pipeline-agent
-    - icon: fontawesome/solid/envelope
-      link: mailto:victor.cappelletto@example.com
+      link: https://github.com/VictorCappelletto/data_agent_ia_01
 
 extra_css:
   - stylesheets/extra.css
