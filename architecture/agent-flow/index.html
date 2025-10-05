@@ -855,6 +855,75 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#o-que-e-langgraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      O Que é LangGraph?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="O Que é LangGraph?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conceito-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conceito Core
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-usar-langgraph-vs-langchain-puro" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por Que Usar LangGraph vs LangChain Puro?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona-no-dpl-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como Funciona no DPL Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beneficios-para-o-dpl-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benefícios para o DPL Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternativas-consideradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternativas Consideradas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualizacao-do-grafo-dpl-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visualização do Grafo DPL Agent
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#arquitetura-de-alto-nivel" class="md-nav__link">
     <span class="md-ellipsis">
       Arquitetura de Alto Nível
@@ -1459,6 +1528,75 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#o-que-e-langgraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      O Que é LangGraph?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="O Que é LangGraph?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conceito-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conceito Core
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-usar-langgraph-vs-langchain-puro" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por Que Usar LangGraph vs LangChain Puro?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona-no-dpl-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como Funciona no DPL Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beneficios-para-o-dpl-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benefícios para o DPL Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternativas-consideradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternativas Consideradas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualizacao-do-grafo-dpl-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visualização do Grafo DPL Agent
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#arquitetura-de-alto-nivel" class="md-nav__link">
     <span class="md-ellipsis">
       Arquitetura de Alto Nível
@@ -1620,6 +1758,129 @@
 
 <h1 id="arquitetura-fluxo-do-agent">Arquitetura &amp; Fluxo do Agent<a class="headerlink" href="#arquitetura-fluxo-do-agent" title="Permanent link">&para;</a></h1>
 <p>Esta página fornece diagramas visuais explicando como o DPL Agent funciona internamente.</p>
+<hr />
+<h2 id="o-que-e-langgraph">O Que é LangGraph?<a class="headerlink" href="#o-que-e-langgraph" title="Permanent link">&para;</a></h2>
+<p><strong>LangGraph</strong> é um framework da LangChain para construir <strong>aplicações multi-agent com estado</strong> usando grafos direcionados.</p>
+<h3 id="conceito-core">Conceito Core<a class="headerlink" href="#conceito-core" title="Permanent link">&para;</a></h3>
+<p>LangGraph modela aplicações AI como um <strong>grafo de estados</strong> onde:
+- <strong>Nós</strong> são funções que processam o estado (ex: especialistas, LLM calls)
+- <strong>Arestas</strong> definem transições entre nós (ex: roteamento, condicionais)
+- <strong>Estado</strong> é compartilhado e modificado ao longo do fluxo</p>
+<h3 id="por-que-usar-langgraph-vs-langchain-puro">Por Que Usar LangGraph vs LangChain Puro?<a class="headerlink" href="#por-que-usar-langgraph-vs-langchain-puro" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>LangChain (Chains)</th>
+<th>LangGraph (Graphs)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fluxo linear sequencial</td>
+<td>Fluxo com ciclos e condicionais</td>
+</tr>
+<tr>
+<td>Difícil adicionar loops</td>
+<td>Loops nativos (ex: retry, refinement)</td>
+</tr>
+<tr>
+<td>Estado implícito</td>
+<td>Estado explícito e controlado</td>
+</tr>
+<tr>
+<td>Hard-coded routing</td>
+<td>Dynamic routing baseado em estado</td>
+</tr>
+</tbody>
+</table>
+<h3 id="como-funciona-no-dpl-agent">Como Funciona no DPL Agent<a class="headerlink" href="#como-funciona-no-dpl-agent" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Definição simplificada do grafo</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># 1. Definir o estado compartilhado</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">AgentState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Message</span><span class="p">]</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">specialist</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">context</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># 2. Criar grafo com nós (funções)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">workflow</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">AgentState</span><span class="p">)</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;router&quot;</span><span class="p">,</span> <span class="n">route_to_specialist</span><span class="p">)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;troubleshooter&quot;</span><span class="p">,</span> <span class="n">troubleshoot_specialist</span><span class="p">)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;performance&quot;</span><span class="p">,</span> <span class="n">performance_specialist</span><span class="p">)</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1"># 3. Definir transições (arestas)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="s2">&quot;router&quot;</span><span class="p">,</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="k">lambda</span> <span class="n">state</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;specialist&quot;</span><span class="p">],</span>  <span class="c1"># Decisão dinâmica</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="p">{</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>        <span class="s2">&quot;troubleshooter&quot;</span><span class="p">:</span> <span class="s2">&quot;troubleshooter&quot;</span><span class="p">,</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>        <span class="s2">&quot;performance&quot;</span><span class="p">:</span> <span class="s2">&quot;performance&quot;</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="p">}</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="p">)</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="c1"># 4. Compilar grafo</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="n">agent</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</span></code></pre></div>
+<h3 id="beneficios-para-o-dpl-agent">Benefícios para o DPL Agent<a class="headerlink" href="#beneficios-para-o-dpl-agent" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Roteamento Dinâmico</strong>: Seleciona especialista baseado na intenção do usuário</li>
+<li><strong>Conversas Multi-turno</strong>: Mantém contexto entre interações</li>
+<li><strong>Retry e Validação</strong>: Pode refazer passos se resposta inadequada</li>
+<li><strong>Debugging</strong>: Estado explícito facilita rastreamento</li>
+</ol>
+<h3 id="alternativas-consideradas">Alternativas Consideradas<a class="headerlink" href="#alternativas-consideradas" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>LangChain LCEL</strong>: Bom para pipelines simples, limitado para decisões complexas</li>
+<li><strong>Custom Orchestration</strong>: Mais flexível mas requer implementar gerenciamento de estado</li>
+<li><strong>AutoGPT/BabyAGI</strong>: Muito autônomo, difícil de controlar</li>
+</ul>
+<p><strong>Escolha:</strong> LangGraph oferece o melhor equilíbrio entre flexibilidade e controle.</p>
+<h3 id="visualizacao-do-grafo-dpl-agent">Visualização do Grafo DPL Agent<a class="headerlink" href="#visualizacao-do-grafo-dpl-agent" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    START([Início]) --&gt; ROUTER[Router Node&lt;br/&gt;Classifica Intenção]
+
+    ROUTER --&gt;|troubleshoot| TROUBLE[Troubleshooter&lt;br/&gt;Diagnóstico]
+    ROUTER --&gt;|performance| PERF[Performance Advisor&lt;br/&gt;Otimização]
+    ROUTER --&gt;|quality| QUAL[Quality Assistant&lt;br/&gt;Validação]
+    ROUTER --&gt;|workflow| CMD[DPL Commander&lt;br/&gt;Execução]
+    ROUTER --&gt;|bug| BUG[Bug Resolver&lt;br/&gt;Correção]
+    ROUTER --&gt;|docs| ECO[Ecosystem Assistant&lt;br/&gt;Documentação]
+    ROUTER --&gt;|reprocess| COORD[DPL Coordinator&lt;br/&gt;Coordenação]
+
+    TROUBLE --&gt; RESPOND[Response Node&lt;br/&gt;Formatar Resposta]
+    PERF --&gt; RESPOND
+    QUAL --&gt; RESPOND
+    CMD --&gt; RESPOND
+    BUG --&gt; RESPOND
+    ECO --&gt; RESPOND
+    COORD --&gt; RESPOND
+
+    RESPOND --&gt; END([Fim])
+
+    style ROUTER fill:#ff9800,stroke:#333,stroke-width:2px,color:#000
+    style RESPOND fill:#4caf50,stroke:#333,stroke-width:2px,color:#000
+    style TROUBLE fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style PERF fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style QUAL fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style CMD fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style BUG fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style ECO fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style COORD fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff</code></pre>
+<p><strong>Componentes do Grafo:</strong>
+- <strong>START</strong>: Recebe consulta do usuário
+- <strong>ROUTER</strong>: Nó decisor que classifica intenção (conditional edge)
+- <strong>Especialistas (7 nós)</strong>: Cada um processa tipos específicos de consultas
+- <strong>RESPOND</strong>: Formata resposta final
+- <strong>END</strong>: Retorna para o usuário</p>
+<p><strong>Estado compartilhado entre nós:</strong>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># Histórico da conversa</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="s2">&quot;specialist&quot;</span><span class="p">:</span> <span class="s2">&quot;troubleshoot&quot;</span><span class="p">,</span> <span class="c1"># Especialista selecionado</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>            <span class="c1"># Contexto RAG recuperado</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="s2">&quot;pipeline_info&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>       <span class="c1"># Metadados do pipeline</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
+</span></code></pre></div></p>
 <hr />
 <h2 id="arquitetura-de-alto-nivel">Arquitetura de Alto Nível<a class="headerlink" href="#arquitetura-de-alto-nivel" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>graph LR

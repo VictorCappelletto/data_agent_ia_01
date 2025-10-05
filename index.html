@@ -1733,12 +1733,14 @@
 </ul>
 <p>📖 <strong><a href="architecture/rag-explained/">Explicação Técnica Completa do RAG</a></strong></p>
 <h3 id="orquestracao-langgraph">Orquestração LangGraph<a class="headerlink" href="#orquestracao-langgraph" title="Permanent link">&para;</a></h3>
+<p><strong>LangGraph</strong> é usado para orquestração multi-agent baseada em grafos de estado:</p>
 <ul>
-<li><strong>Workflows com estado</strong> para interações multi-turno</li>
-<li><strong>Roteamento inteligente</strong> baseado na intenção da consulta</li>
-<li><strong>Chamada de ferramentas</strong> com seleção de especialista</li>
-<li><strong>Memória de conversa</strong> para preservação de contexto</li>
+<li><strong>Grafo de Estado</strong>: 7 especialistas como nós, roteamento dinâmico entre eles</li>
+<li><strong>Conversas Multi-turno</strong>: Estado compartilhado mantém contexto</li>
+<li><strong>Roteamento Condicional</strong>: Classifica intenção e seleciona especialista apropriado</li>
+<li><strong>Execução Controlada</strong>: Loops, retry e validação nativos</li>
 </ul>
+<p>📖 <strong><a href="architecture/agent-flow/#o-que-e-langgraph">Explicação Completa do LangGraph</a></strong></p>
 <hr />
 <h2 id="sete-ferramentas-especialistas">Sete Ferramentas Especialistas<a class="headerlink" href="#sete-ferramentas-especialistas" title="Permanent link">&para;</a></h2>
 <ol>
