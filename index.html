@@ -561,9 +561,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#sistema-rag" class="md-nav__link">
+  <a href="#sistema-rag-retrieval-augmented-generation" class="md-nav__link">
     <span class="md-ellipsis">
-      Sistema RAG
+      Sistema RAG (Retrieval-Augmented Generation)
     </span>
   </a>
   
@@ -1035,6 +1035,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/rag-explained/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RAG Explicado
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1335,6 +1358,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="examples/rag-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Uso do RAG
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1487,9 +1533,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#sistema-rag" class="md-nav__link">
+  <a href="#sistema-rag-retrieval-augmented-generation" class="md-nav__link">
     <span class="md-ellipsis">
-      Sistema RAG
+      Sistema RAG (Retrieval-Augmented Generation)
     </span>
   </a>
   
@@ -1662,13 +1708,30 @@
 <li><strong>Camada de Aplicação</strong>: Casos de uso e orquestração (7 especialistas)</li>
 <li><strong>Camada de Infraestrutura</strong>: LLM, vector store e integrações externas</li>
 </ul>
-<h3 id="sistema-rag">Sistema RAG<a class="headerlink" href="#sistema-rag" title="Permanent link">&para;</a></h3>
+<h3 id="sistema-rag-retrieval-augmented-generation">Sistema RAG (Retrieval-Augmented Generation)<a class="headerlink" href="#sistema-rag-retrieval-augmented-generation" title="Permanent link">&para;</a></h3>
+<p>O DPL Agent utiliza <strong>RAG</strong> para fornecer respostas fundamentadas em documentação real, não em conhecimento genérico do LLM.</p>
+<p><strong>Como Funciona:</strong></p>
+<ol>
+<li><strong>Retrieval</strong>: Busca documentos relevantes usando embeddings vetoriais (Sentence Transformers)</li>
+<li><strong>Augmentation</strong>: Injeta contexto recuperado no prompt do LLM</li>
+<li><strong>Generation</strong>: LLM gera resposta baseada na documentação DPL específica</li>
+</ol>
+<p><strong>Benefícios:</strong></p>
 <ul>
-<li><strong>66 arquivos de documentação</strong> como base de conhecimento (41 core + 25 workflows)</li>
-<li><strong>Vector store ChromaDB</strong> para busca semântica</li>
-<li><strong>Recuperação consciente de contexto</strong> com filtragem de entidade e pipeline</li>
-<li><strong>Integrado em todos os especialistas</strong> para respostas aprimoradas</li>
+<li>✅ Respostas específicas do DPL (não genéricas)</li>
+<li>✅ Fundamentadas em documentação real com citações</li>
+<li>✅ Reduz "alucinações" do LLM</li>
+<li>✅ Conhecimento atualizado sem retreinar modelo</li>
 </ul>
+<p><strong>Stack Técnico:</strong></p>
+<ul>
+<li><strong>Base de Conhecimento</strong>: 66 arquivos markdown (41 core + 25 workflows)</li>
+<li><strong>Vector Store</strong>: ChromaDB para busca semântica</li>
+<li><strong>Embeddings</strong>: Sentence Transformers <code>all-MiniLM-L6-v2</code> (384D)</li>
+<li><strong>Similaridade</strong>: Cosine similarity para ranking de relevância</li>
+<li><strong>Integração</strong>: ✅ Todos os 7 especialistas usam RAG automaticamente</li>
+</ul>
+<p>📖 <strong><a href="architecture/rag-explained/">Explicação Técnica Completa do RAG</a></strong></p>
 <h3 id="orquestracao-langgraph">Orquestração LangGraph<a class="headerlink" href="#orquestracao-langgraph" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Workflows com estado</strong> para interações multi-turno</li>

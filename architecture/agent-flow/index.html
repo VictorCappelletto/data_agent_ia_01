@@ -18,7 +18,7 @@
         <link rel="prev" href="../clean-architecture/">
       
       
-        <link rel="next" href="../../specialists/overview/">
+        <link rel="next" href="../rag-explained/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -873,11 +873,35 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sistema-rag-recuperacao-de-conhecimento" class="md-nav__link">
+  <a href="#sistema-rag-retrieval-augmented-generation" class="md-nav__link">
     <span class="md-ellipsis">
-      Sistema RAG (Recuperação de Conhecimento)
+      Sistema RAG (Retrieval-Augmented Generation)
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Sistema RAG (Retrieval-Augmented Generation)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arquitetura-completa-em-3-fases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arquitetura Completa em 3 Fases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#componentes-tecnicos-explicados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Componentes Técnicos Explicados
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -975,6 +999,29 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rag-explained/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RAG Explicado
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1280,6 +1327,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/rag-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Uso do RAG
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1407,11 +1477,35 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sistema-rag-recuperacao-de-conhecimento" class="md-nav__link">
+  <a href="#sistema-rag-retrieval-augmented-generation" class="md-nav__link">
     <span class="md-ellipsis">
-      Sistema RAG (Recuperação de Conhecimento)
+      Sistema RAG (Retrieval-Augmented Generation)
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Sistema RAG (Retrieval-Augmented Generation)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arquitetura-completa-em-3-fases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arquitetura Completa em 3 Fases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#componentes-tecnicos-explicados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Componentes Técnicos Explicados
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1543,40 +1637,96 @@
 <hr />
 <h2 id="fluxo-de-execucao-do-agent">Fluxo de Execução do Agent<a class="headerlink" href="#fluxo-de-execucao-do-agent" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>sequenceDiagram
-    participant Usuário
-    participant Agent
-    participant BC as Base de Conhecimento
-    participant Especialista
+    participant U as Usuário
+    participant A as Agent (LangGraph)
+    participant S as Especialista
+    participant R as DPLRetrieverService
+    participant V as ChromaDB
+    participant L as LLM (Claude)
 
-    Usuário-&gt;&gt;Agent: "Por que o pipeline visits está expirando?"
-    Agent-&gt;&gt;BC: Buscar docs relevantes
-    BC--&gt;&gt;Agent: Documentação DPL
-    Agent-&gt;&gt;Especialista: Executar troubleshooter
-    Especialista--&gt;&gt;Agent: Diagnóstico + etapas
-    Agent--&gt;&gt;Usuário: Resposta profissional</code></pre>
-<p><strong>Etapas:</strong>
-1. Usuário faz pergunta
-2. Agent busca base de conhecimento por contexto
-3. Agent seleciona e executa especialista apropriado
-4. Especialista fornece diagnóstico com fontes
-5. Agent retorna resposta formatada</p>
+    U-&gt;&gt;A: "Pipeline visits expirando"
+
+    Note over A: 1. ROTEAMENTO
+    A-&gt;&gt;A: Análise de intenção&lt;br/&gt;(LLM classifica)
+    A-&gt;&gt;S: Chamar Troubleshooter
+
+    Note over S,V: 2. RETRIEVAL
+    S-&gt;&gt;R: search_error_patterns(&lt;br/&gt;"visits expirando")
+    R-&gt;&gt;R: Construir query otimizada
+    R-&gt;&gt;V: similarity_search(&lt;br/&gt;query_vector, k=5)
+    V--&gt;&gt;R: Top-5 docs + scores
+    R-&gt;&gt;R: enhance_context()
+    R--&gt;&gt;S: Contexto formatado
+
+    Note over S,L: 3. GENERATION
+    S-&gt;&gt;S: Construir prompt:&lt;br/&gt;contexto + query
+    S-&gt;&gt;L: generate(prompt)
+    L--&gt;&gt;S: Diagnóstico fundamentado
+
+    S--&gt;&gt;A: Resultado + fontes
+    A--&gt;&gt;U: Resposta formatada</code></pre>
+<p><strong>Etapas Detalhadas:</strong></p>
+<ol>
+<li><strong>Roteamento</strong>: Agent classifica intenção e seleciona especialista apropriado</li>
+<li><strong>Retrieval</strong>: Especialista busca documentação relevante via RAG (embeddings + similaridade)</li>
+<li><strong>Generation</strong>: LLM gera resposta baseada no contexto recuperado</li>
+<li><strong>Resposta</strong>: Inclui diagnóstico + citações das fontes consultadas</li>
+</ol>
+<p><strong>Pontos Importantes:</strong></p>
+<ul>
+<li><strong>LLM usado 2x</strong>: No Agent (classificação) e no Especialista (geração)</li>
+<li><strong>RAG no Especialista</strong>: Cada especialista chama <code>DPLRetrieverService</code> automaticamente</li>
+<li><strong>Contexto flui</strong>: ChromaDB → Retriever → Especialista → LLM → Usuário</li>
+</ul>
 <hr />
-<h2 id="sistema-rag-recuperacao-de-conhecimento">Sistema RAG (Recuperação de Conhecimento)<a class="headerlink" href="#sistema-rag-recuperacao-de-conhecimento" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>graph TD
-    A[Especialista precisa de contexto] --&gt; B[Serviço RAG]
-    B --&gt; C[Buscar Base de Conhecimento]
-    C --&gt; D{Encontrou?}
-    D --&gt;|Sim| E[Retornar contexto + fontes]
-    D --&gt;|Não| F[Usar padrões fallback]
-    E --&gt; G[Resposta aprimorada]
-    F --&gt; G
+<h2 id="sistema-rag-retrieval-augmented-generation">Sistema RAG (Retrieval-Augmented Generation)<a class="headerlink" href="#sistema-rag-retrieval-augmented-generation" title="Permanent link">&para;</a></h2>
+<h3 id="arquitetura-completa-em-3-fases">Arquitetura Completa em 3 Fases<a class="headerlink" href="#arquitetura-completa-em-3-fases" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph "FASE 1: INDEXAÇÃO (Offline - Setup)"
+        A[Documentos .md&lt;br/&gt;66 arquivos] --&gt; B[Chunking&lt;br/&gt;Dividir em blocos]
+        B --&gt; C[Embedding Model&lt;br/&gt;all-MiniLM-L6-v2]
+        C --&gt; D[Vetores 384D&lt;br/&gt;representação numérica]
+        D --&gt; E[(ChromaDB&lt;br/&gt;Vector Store)]
+    end
 
-    style B fill:#00acc1,stroke:#333,stroke-width:2px</code></pre>
-<p><strong>Como funciona:</strong>
-- Especialistas consultam o serviço RAG para documentação relevante
-- RAG busca 66 arquivos markdown usando busca semântica
-- Retorna contexto com fontes se encontrado
-- Volta para padrões hardcoded se não encontrado</p>
+    subgraph "FASE 2: RETRIEVAL (Runtime - Busca)"
+        F[Query do Usuário&lt;br/&gt;texto] --&gt; G[Embedding Model&lt;br/&gt;mesma transformação]
+        G --&gt; H[Query Vector 384D]
+        H --&gt; I[Cosine Similarity&lt;br/&gt;Top-K Search]
+        E --&gt; I
+        I --&gt; J[Top-5 Documentos&lt;br/&gt;mais relevantes + scores]
+    end
+
+    subgraph "FASE 3: GENERATION (Runtime - Resposta)"
+        J --&gt; K[Context Injection&lt;br/&gt;formatar para prompt]
+        K --&gt; L[LLM Claude&lt;br/&gt;gerar resposta]
+        L --&gt; M[Resposta Final&lt;br/&gt;com citações das fontes]
+    end
+
+    style E fill:#00acc1,stroke:#333,stroke-width:2px,color:#fff
+    style L fill:#1565c0,stroke:#333,stroke-width:2px,color:#fff
+    style I fill:#ff9800,stroke:#333,stroke-width:2px,color:#000</code></pre>
+<h3 id="componentes-tecnicos-explicados">Componentes Técnicos Explicados<a class="headerlink" href="#componentes-tecnicos-explicados" title="Permanent link">&para;</a></h3>
+<p><strong>1. Embedding Model (Sentence Transformers)</strong>
+- Converte texto em vetores numéricos de 384 dimensões
+- Textos semanticamente similares → vetores próximos no espaço vetorial
+- Modelo: <code>all-MiniLM-L6-v2</code> (rápido, leve, 80MB)</p>
+<p><strong>2. Vector Database (ChromaDB)</strong>
+- Armazena embeddings dos 66 documentos da base de conhecimento
+- Busca eficiente usando índices aproximados (HNSW algorithm)
+- Persiste em disco para reuso entre execuções</p>
+<p><strong>3. Similarity Search (Cosine)</strong>
+- Calcula similaridade entre query vector e document vectors
+- Métrica: Cosine Similarity (0 = totalmente diferente, 1 = idêntico)
+- Retorna Top-K documentos mais similares (default K=5)</p>
+<p><strong>4. Context Injection</strong>
+- Formata documentos recuperados em texto estruturado
+- Injeta no prompt do LLM com instruções específicas
+- Garante resposta fundamentada em documentação real</p>
+<p><strong>5. LLM Generation (Claude)</strong>
+- Recebe: contexto recuperado + query original + instruções
+- Gera: resposta baseada APENAS no contexto fornecido
+- Inclui: citações das fontes consultadas</p>
 <hr />
 <h2 id="camadas-de-arquitetura-limpa">Camadas de Arquitetura Limpa<a class="headerlink" href="#camadas-de-arquitetura-limpa" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>graph BT
