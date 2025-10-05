@@ -55,10 +55,15 @@ O DPL Agent utiliza **RAG** para fornecer respostas fundamentadas em documentaç
 📖 **[Explicação Técnica Completa do RAG](architecture/rag-explained.md)**
 
 ### Orquestração LangGraph
-- **Workflows com estado** para interações multi-turno
-- **Roteamento inteligente** baseado na intenção da consulta
-- **Chamada de ferramentas** com seleção de especialista
-- **Memória de conversa** para preservação de contexto
+
+**LangGraph** é usado para orquestração multi-agent baseada em grafos de estado:
+
+- **Grafo de Estado**: 7 especialistas como nós, roteamento dinâmico entre eles
+- **Conversas Multi-turno**: Estado compartilhado mantém contexto
+- **Roteamento Condicional**: Classifica intenção e seleciona especialista apropriado
+- **Execução Controlada**: Loops, retry e validação nativos
+
+📖 **[Explicação Completa do LangGraph](architecture/agent-flow.md#o-que-e-langgraph)**
 
 ---
 

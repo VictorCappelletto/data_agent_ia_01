@@ -4,6 +4,127 @@ Esta página fornece diagramas visuais explicando como o DPL Agent funciona inte
 
 ---
 
+## O Que é LangGraph?
+
+**LangGraph** é um framework da LangChain para construir **aplicações multi-agent com estado** usando grafos direcionados.
+
+### Conceito Core
+
+LangGraph modela aplicações AI como um **grafo de estados** onde:
+- **Nós** são funções que processam o estado (ex: especialistas, LLM calls)
+- **Arestas** definem transições entre nós (ex: roteamento, condicionais)
+- **Estado** é compartilhado e modificado ao longo do fluxo
+
+### Por Que Usar LangGraph vs LangChain Puro?
+
+| LangChain (Chains) | LangGraph (Graphs) |
+|--------------------|-------------------|
+| Fluxo linear sequencial | Fluxo com ciclos e condicionais |
+| Difícil adicionar loops | Loops nativos (ex: retry, refinement) |
+| Estado implícito | Estado explícito e controlado |
+| Hard-coded routing | Dynamic routing baseado em estado |
+
+### Como Funciona no DPL Agent
+
+```python
+# Definição simplificada do grafo
+from langgraph.graph import StateGraph
+
+# 1. Definir o estado compartilhado
+class AgentState(TypedDict):
+    messages: List[Message]
+    specialist: str
+    context: str
+
+# 2. Criar grafo com nós (funções)
+workflow = StateGraph(AgentState)
+workflow.add_node("router", route_to_specialist)
+workflow.add_node("troubleshooter", troubleshoot_specialist)
+workflow.add_node("performance", performance_specialist)
+
+# 3. Definir transições (arestas)
+workflow.add_conditional_edges(
+    "router",
+    lambda state: state["specialist"],  # Decisão dinâmica
+    {
+        "troubleshooter": "troubleshooter",
+        "performance": "performance"
+    }
+)
+
+# 4. Compilar grafo
+agent = workflow.compile()
+```
+
+### Benefícios para o DPL Agent
+
+1. **Roteamento Dinâmico**: Seleciona especialista baseado na intenção do usuário
+2. **Conversas Multi-turno**: Mantém contexto entre interações
+3. **Retry e Validação**: Pode refazer passos se resposta inadequada
+4. **Debugging**: Estado explícito facilita rastreamento
+
+### Alternativas Consideradas
+
+- **LangChain LCEL**: Bom para pipelines simples, limitado para decisões complexas
+- **Custom Orchestration**: Mais flexível mas requer implementar gerenciamento de estado
+- **AutoGPT/BabyAGI**: Muito autônomo, difícil de controlar
+
+**Escolha:** LangGraph oferece o melhor equilíbrio entre flexibilidade e controle.
+
+### Visualização do Grafo DPL Agent
+
+```mermaid
+graph TD
+    START([Início]) --> ROUTER[Router Node<br/>Classifica Intenção]
+    
+    ROUTER -->|troubleshoot| TROUBLE[Troubleshooter<br/>Diagnóstico]
+    ROUTER -->|performance| PERF[Performance Advisor<br/>Otimização]
+    ROUTER -->|quality| QUAL[Quality Assistant<br/>Validação]
+    ROUTER -->|workflow| CMD[DPL Commander<br/>Execução]
+    ROUTER -->|bug| BUG[Bug Resolver<br/>Correção]
+    ROUTER -->|docs| ECO[Ecosystem Assistant<br/>Documentação]
+    ROUTER -->|reprocess| COORD[DPL Coordinator<br/>Coordenação]
+    
+    TROUBLE --> RESPOND[Response Node<br/>Formatar Resposta]
+    PERF --> RESPOND
+    QUAL --> RESPOND
+    CMD --> RESPOND
+    BUG --> RESPOND
+    ECO --> RESPOND
+    COORD --> RESPOND
+    
+    RESPOND --> END([Fim])
+    
+    style ROUTER fill:#ff9800,stroke:#333,stroke-width:2px,color:#000
+    style RESPOND fill:#4caf50,stroke:#333,stroke-width:2px,color:#000
+    style TROUBLE fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style PERF fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style QUAL fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style CMD fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style BUG fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style ECO fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style COORD fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+```
+
+**Componentes do Grafo:**
+- **START**: Recebe consulta do usuário
+- **ROUTER**: Nó decisor que classifica intenção (conditional edge)
+- **Especialistas (7 nós)**: Cada um processa tipos específicos de consultas
+- **RESPOND**: Formata resposta final
+- **END**: Retorna para o usuário
+
+**Estado compartilhado entre nós:**
+```python
+{
+    "messages": [...],           # Histórico da conversa
+    "specialist": "troubleshoot", # Especialista selecionado
+    "context": "...",            # Contexto RAG recuperado
+    "pipeline_info": {...}       # Metadados do pipeline
+}
+```
+
+---
+
 ## Arquitetura de Alto Nível
 
 ```mermaid

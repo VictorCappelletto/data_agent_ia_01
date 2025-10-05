@@ -29,15 +29,15 @@ O Data Pipeline Agent (DPL Agent) é um sistema AI pronto para produção constr
 
 O DPL Agent utiliza **RAG** para fornecer respostas fundamentadas em documentação real:
 
-- 🔍 **Retrieval**: Busca semântica com embeddings vetoriais (Sentence Transformers)
-- 🧠 **Augmentation**: Injeta contexto recuperado no prompt do LLM
-- ✨ **Generation**: LLM gera respostas baseadas na documentação DPL específica
+- **Retrieval**: Busca semântica com embeddings vetoriais (Sentence Transformers)
+- **Augmentation**: Injeta contexto recuperado no prompt do LLM
+- **Generation**: LLM gera respostas baseadas na documentação DPL específica
 
 **Benefícios**:
-- ✅ Respostas específicas do DPL (não genéricas)
-- ✅ Fundamentadas em documentação real com citações
-- ✅ Reduz "alucinações" do LLM
-- ✅ Conhecimento atualizado sem retreinar modelo
+- Respostas específicas do DPL (não genéricas)
+- Fundamentadas em documentação real com citações
+- Reduz "alucinações" do LLM
+- Conhecimento atualizado sem retreinar modelo
 
 ### Stack Técnico
 
