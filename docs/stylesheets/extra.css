@@ -1,0 +1,107 @@
+/* Custom styling for DPL Agent documentation */
+
+:root {
+  --md-primary-fg-color: #3f51b5;
+  --md-accent-fg-color: #448aff;
+}
+
+/* Code blocks */
+.highlight pre {
+  border-radius: 8px;
+  padding: 1em;
+}
+
+/* Admonitions */
+.admonition {
+  border-radius: 8px;
+  margin: 1.5em 0;
+}
+
+/* Tables */
+table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Navigation tabs */
+.md-tabs {
+  background-color: var(--md-primary-fg-color);
+}
+
+/* Search box */
+.md-search__input {
+  border-radius: 8px;
+}
+
+/* Links */
+a:hover {
+  text-decoration: underline;
+}
+
+/* Inline code */
+code {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* Dark mode adjustments */
+[data-md-color-scheme="slate"] code {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark mode - Override Material theme Mermaid variables */
+[data-md-color-scheme="slate"] {
+  --md-mermaid-label-fg-color: #ffffff !important;
+  --md-mermaid-node-fg-color: #ffffff !important;
+  --md-mermaid-edge-color: #ffffff !important;
+}
+
+/* Dark mode - Darken colored backgrounds */
+[data-md-color-scheme="slate"] .mermaid [fill="#ffd"],
+[data-md-color-scheme="slate"] .mermaid [fill="#dff"],
+[data-md-color-scheme="slate"] .mermaid [fill="#fdf"],
+[data-md-color-scheme="slate"] .mermaid [fill="#dfd"],
+[data-md-color-scheme="slate"] .mermaid [fill="#fdd"],
+[data-md-color-scheme="slate"] .mermaid [fill="#ddf"],
+[data-md-color-scheme="slate"] .mermaid [fill="#fed"],
+[data-md-color-scheme="slate"] .mermaid [fill="#edf"],
+[data-md-color-scheme="slate"] .mermaid [fill="#eef"] {
+  filter: brightness(0.5) saturate(1.3) !important;
+}
+
+/* Custom badges */
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  margin-right: 0.5em;
+}
+
+.badge-success {
+  color: #fff;
+  background-color: #28a745;
+}
+
+.badge-warning {
+  color: #212529;
+  background-color: #ffc107;
+}
+
+.badge-danger {
+  color: #fff;
+  background-color: #dc3545;
+}
+
+.badge-info {
+  color: #fff;
+  background-color: #17a2b8;
+}
+

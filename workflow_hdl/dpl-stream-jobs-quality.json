@@ -1,0 +1,100 @@
+{
+  "name": "dashboard_jobs_quality_hdl",
+  "email_notifications": {
+    "no_alert_for_skipped_runs": true
+  },
+  "webhook_notifications": {},
+  "notification_settings": {
+    "no_alert_for_canceled_runs": false
+  },
+  "timeout_seconds": 0,
+  "trigger": {
+    "pause_status": "UNPAUSED",
+    "periodic": {
+      "interval": 2,
+      "unit": "HOURS"
+    }
+  },
+  "max_concurrent_runs": 1,
+  "tasks": [
+    {
+      "task_key": "jobs_quality_hdl",
+      "run_if": "ALL_SUCCESS",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Shared/hdl_stm/quality/extract/run_pbi_tables",
+        "base_parameters": {
+          "process_name": "jobs_quality_hdl",
+          "job_id": "{{job.id}}",
+          "run_id": "{{job.run_id}}"
+        },
+        "source": "WORKSPACE"
+      },
+      "job_cluster_key": "CLUSTER_GENERAL_PURPOSE_SMALL",
+      "libraries": [
+        {
+          "pypi": {
+            "package": "pyyaml==6.0.1"
+          }
+        },
+        {
+          "maven": {
+            "coordinates": "org.document_db.spark:mongo-spark-connector_2.12:10.3.0"
+          }
+        },
+        {
+          "pypi": {
+            "package": "bson"
+          }
+        },
+        {
+          "pypi": {
+            "package": "pymongo"
+          }
+        }
+      ],
+      "timeout_seconds": 3600,
+      "health": {
+        "rules": [
+          {
+            "metric": "RUN_DURATION_SECONDS",
+            "op": "GREATER_THAN",
+            "value": 3600
+          }
+        ]
+      },
+      "email_notifications": {},
+      "webhook_notifications": {}
+    }
+  ],
+  "job_clusters": [
+    {
+      "job_cluster_key": "CLUSTER_GENERAL_PURPOSE_SMALL",
+      "new_cluster": {
+        "cluster_name": "",
+        "spark_version": "16.4.x-scala2.12",
+        "spark_conf": {
+          "spark.databricks.io.cache.compression.enabled": "false",
+          "spark.databricks.io.cache.maxMetaDataCache": "1g",
+          "spark.databricks.io.cache.maxDiskUsage": "50g"
+        },
+        "azure_attributes": {
+          "first_on_demand": 1,
+          "availability": "SPOT_WITH_FALLBACK_AZURE",
+          "spot_bid_max_price": -1
+        },
+        "node_type_id": "Standard_D4s_v3",
+        "driver_node_type_id": "Standard_D4s_v3",
+        "enable_elastic_disk": true,
+        "policy_id": "001E585E129A9E85",
+        "data_security_mode": "USER_ISOLATION",
+        "runtime_engine": "STANDARD",
+        "autoscale": {
+          "min_workers": 1,
+          "max_workers": 3
+        }
+      }
+    }
+  ],
+  "run_as": {
+  }
+}

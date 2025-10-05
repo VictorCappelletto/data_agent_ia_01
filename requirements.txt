@@ -1,0 +1,14 @@
+# Core dependencies (Python 3.9 compatible)
+langchain>=0.1.0,<0.3.0
+langgraph>=0.1.0,<0.3.0
+langchain-anthropic>=0.1.0,<0.2.0
+langchain-openai>=0.1.0,<0.2.0
+chromadb>=0.4.0,<0.5.0
+databricks-sdk>=0.20.0,<0.30.0
+python-dotenv>=1.0.0
+pyyaml>=6.0
+requests>=2.31.0
+pydantic>=2.0.0,<3.0.0
+
+# Optional: MCP (requires Python 3.10+, skip for Python 3.9)
+# mcp>=1.0.0

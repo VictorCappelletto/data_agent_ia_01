@@ -1,0 +1,76 @@
+{
+    "name": "dpl-stream-offline-orders",
+    "email_notifications": {
+        "no_alert_for_skipped_runs": false
+    },
+    "notification_settings": {
+        "no_alert_for_skipped_runs": false,
+        "no_alert_for_canceled_runs": false
+    },
+    "timeout_seconds": 10800,
+    "health": {
+        "rules": [
+            {
+                "metric": "RUN_DURATION_SECONDS",
+                "op": "GREATER_THAN",
+                "value": 3600
+            }
+        ]
+    },
+    "trigger": {
+        "pause_status": "<PAUSE_STATUS>",
+        "file_arrival": {
+            "url": "<EVENTHUB_BASE_PATH>evh<ENVIRONMENT>am-ldz012-Operations-Platform-offline-orders/",
+            "min_time_between_triggers_seconds": "<MIN_TIME_BETWEEN_TRIGGERS_STREAM_SECONDS>"
+        }
+    },
+    "parameters": [
+        {
+            "name": "trigger",
+            "default": "{'availableNow':True}"
+        }
+    ],
+    "tasks": [
+        {
+            "task_key": "bronze_ingestion_streaming",
+            "run_if": "ALL_SUCCESS",
+            "notebook_task": {
+                "notebook_path": "/Workspace/Shared/hdl_stm/layers/bronze/bronze_ingestion",
+                "base_parameters": {
+                    "event_hub_entity_name": "offline-orders",
+                    "table_name": "frt_am.bronze_Platform.offlineorders__offlineorders_stream"
+                },
+                "source": "WORKSPACE"
+            },
+            "job_cluster_key": "CLUSTER_MEMORY_OPTIMIZED_SMALL",
+            "timeout_seconds": 0,
+            "email_notifications": {},
+            "webhook_notifications": {}
+        },
+        {
+            "task_key": "silver_ingestion_streaming",
+            "depends_on": [
+                {
+                    "task_key": "bronze_ingestion_streaming"
+                }
+            ],
+            "run_if": "ALL_SUCCESS",
+            "notebook_task": {
+                "notebook_path": "/Workspace/Shared/hdl_stm/layers/silver/offline_orders",
+                "source": "WORKSPACE"
+            },
+            "job_cluster_key": "CLUSTER_MEMORY_OPTIMIZED_SMALL",
+            "timeout_seconds": 0,
+            "email_notifications": {},
+            "webhook_notifications": {}
+        }
+    ],
+    "tags": {
+        "team": "hdl",
+        "DataStreamProcessor": "",
+        "entity": "offline-orders"
+    },
+    "queue": {
+        "enabled": true
+    }
+}

@@ -1,0 +1,33 @@
+# DPL Agent v3.0 - Manifest for package distribution
+
+# Include documentation
+include README.md
+include LICENSE
+include CHANGELOG.md
+
+# Include configuration files
+include pyproject.toml
+include mkdocs.yml
+include .env.example
+
+# Include requirements
+include requirements.txt
+include requirements-dev.txt
+
+# Include package data
+recursive-include data_pipeline_agent_lib/configs *.yaml *.json
+recursive-include data_pipeline_agent_lib/configs *.yml
+
+# Include knowledge base
+recursive-include knowledge *.md *.txt
+
+# Exclude development files
+exclude .pre-commit-config.yaml
+recursive-exclude tests *
+recursive-exclude examples *
+recursive-exclude docs *
+recursive-exclude scripts *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * .DS_Store
+
